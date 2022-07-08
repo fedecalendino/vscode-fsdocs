@@ -165,8 +165,9 @@ export class FileSystemProvider implements vscode.TreeDataProvider<Entry>, vscod
 		if(vscode.workspace.workspaceFolders === undefined) {
 			return JSON.parse("{}");
 		} else {
-			let working_directory = vscode.workspace.workspaceFolders[0].uri.path
+			let working_directory = vscode.workspace.workspaceFolders[0].uri.fsPath;
 			const config_path = path.join(working_directory, "sidebar-descriptors.config.json");
+			console.log(config_path);
 			return JSON.parse(readFileSync(config_path).toString());
 		}
 	}
