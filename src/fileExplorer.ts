@@ -267,7 +267,10 @@ export class FileSystemProvider implements vscode.TreeDataProvider<Entry>, vscod
 		return _.rename(oldUri.fsPath, newUri.fsPath);
 	}
 
+	// tree data provider
+
 	async getChildren(element?: Entry): Promise<Entry[]> {
+
 		if (element) {
 			const children = await this.readDirectory(element.uri);
 			return children.map(([name, type]) => ({ uri: vscode.Uri.file(path.join(element.uri.fsPath, name)), type }));
@@ -277,7 +280,7 @@ export class FileSystemProvider implements vscode.TreeDataProvider<Entry>, vscod
 
 		if (workspaceFolder) {
 			const children = await this.readDirectory(workspaceFolder.uri);
-			
+
 			children.sort((a, b) => {
 				if (a[1] === b[1]) {
 					return a[0].localeCompare(b[0]);
@@ -290,8 +293,6 @@ export class FileSystemProvider implements vscode.TreeDataProvider<Entry>, vscod
 
 		return [];
 	}
-
-	// tree data provider
 
 	private loadConfiguration(): any {
 		if(vscode.workspace.workspaceFolders === undefined) {
@@ -314,7 +315,13 @@ export class FileSystemProvider implements vscode.TreeDataProvider<Entry>, vscod
 		}
 	}
 
-	getTreeItem(element: Entry): vscode.TreeItem {
+	getTreeItem(element: Entry): vscode.TreeItem {		
+		var name: string = element.uri.toString().split("/").at(-1);
+
+		if (name.startsWith(".")) {
+			return undefined;
+		}
+
 		const treeItem = new vscode.TreeItem(
 			element.uri, 
 			element.type === vscode.FileType.Directory ? 
@@ -331,10 +338,8 @@ export class FileSystemProvider implements vscode.TreeDataProvider<Entry>, vscod
 			return treeItem;
 		}
 
-		var label: string = element.uri.toString().split("/").at(-1);
-
-		if (this._config["items"].hasOwnProperty(label)) {
-			let item = this._config["items"][label];
+		if (this._config["items"].hasOwnProperty(name)) {
+			let item = this._config["items"][name];
 
 			treeItem.description = this.makeTreeItemDescription(item);
 			treeItem.tooltip = this.makeTreeItemTooltip(item);
