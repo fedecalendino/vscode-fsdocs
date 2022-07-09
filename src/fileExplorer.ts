@@ -6,6 +6,10 @@ import * as rimraf from 'rimraf';
 import { readFileSync } from "fs";
 
 
+const EXTENSION_NAME = "sidebar-descriptor"
+const CONFIG_FILE = "sidebar-descriptors.config.json";
+
+
 namespace _ {
 
 	function handleResult<T>(resolve: (result: T) => void, reject: (error: Error) => void, error: Error | null | undefined, result: T): void {
@@ -161,17 +165,6 @@ export class FileSystemProvider implements vscode.TreeDataProvider<Entry>, vscod
 		this._onDidChangeFile = new vscode.EventEmitter<vscode.FileChangeEvent[]>();
 	}
 
-	private loadConfiguration(): any {
-		if(vscode.workspace.workspaceFolders === undefined) {
-			return JSON.parse("{}");
-		} else {
-			let working_directory = vscode.workspace.workspaceFolders[0].uri.fsPath;
-			const config_path = path.join(working_directory, "sidebar-descriptors.config.json");
-			console.log(config_path);
-			return JSON.parse(readFileSync(config_path).toString());
-		}
-	}
-
 	get onDidChangeFile(): vscode.Event<vscode.FileChangeEvent[]> {
 		return this._onDidChangeFile.event;
 	}
@@ -274,8 +267,6 @@ export class FileSystemProvider implements vscode.TreeDataProvider<Entry>, vscod
 		return _.rename(oldUri.fsPath, newUri.fsPath);
 	}
 
-	// tree data provider
-
 	async getChildren(element?: Entry): Promise<Entry[]> {
 		if (element) {
 			const children = await this.readDirectory(element.uri);
@@ -283,18 +274,44 @@ export class FileSystemProvider implements vscode.TreeDataProvider<Entry>, vscod
 		}
 
 		const workspaceFolder = vscode.workspace.workspaceFolders.filter(folder => folder.uri.scheme === 'file')[0];
+
 		if (workspaceFolder) {
 			const children = await this.readDirectory(workspaceFolder.uri);
+			
 			children.sort((a, b) => {
 				if (a[1] === b[1]) {
 					return a[0].localeCompare(b[0]);
 				}
 				return a[1] === vscode.FileType.Directory ? -1 : 1;
 			});
+
 			return children.map(([name, type]) => ({ uri: vscode.Uri.file(path.join(workspaceFolder.uri.fsPath, name)), type }));
 		}
 
 		return [];
+	}
+
+	// tree data provider
+
+	private loadConfiguration(): any {
+		if(vscode.workspace.workspaceFolders === undefined) {
+			return JSON.parse("{}");
+		} else {
+			let working_directory = vscode.workspace.workspaceFolders[0].uri.fsPath;
+			const config_path = path.join(working_directory, CONFIG_FILE);
+			
+			try {
+				return JSON.parse(readFileSync(config_path).toString());
+			} catch (error) {
+				if (error.code == "ENOENT") {
+					vscode.window.showErrorMessage(`${EXTENSION_NAME}: missing config file '${CONFIG_FILE}'.`);
+				} else if (error.name == "SyntaxError") {
+					vscode.window.showErrorMessage(`${EXTENSION_NAME}: config file is not a valid JSON file.`);
+				}
+
+				return undefined;
+			}
+		}
 	}
 
 	getTreeItem(element: Entry): vscode.TreeItem {
@@ -310,23 +327,66 @@ export class FileSystemProvider implements vscode.TreeDataProvider<Entry>, vscod
 			treeItem.contextValue = 'file';
 		}
 
+		if (this._config === undefined) {
+			return treeItem;
+		}
+
 		var label: string = element.uri.toString().split("/").at(-1);
 
 		if (this._config["items"].hasOwnProperty(label)) {
 			let item = this._config["items"][label];
 
-			var description = item["description"];
-			var environment = item["environment"]
-			var environment_icon = this._config["environments"][environment];
-			var type = item["type"];
-			var type_icon = this._config["types"][type];
-
-			treeItem.description = `${environment_icon} ${type_icon} ${description}`;
-			treeItem.tooltip = `${description} [${environment_icon} · ${environment}] [${type_icon} · ${type}]`;
+			treeItem.description = this.makeTreeItemDescription(item);
+			treeItem.tooltip = this.makeTreeItemTooltip(item);
 		}
 
 		return treeItem;
 	}
+
+	makeTreeItemDescription(item: any): string {
+		if (item.hasOwnProperty("environment")) {
+			var environment = item["environment"];
+			var environment_icon = this._config["environments"][environment];
+
+			var environment_txt = `${environment_icon} `;
+		} else {
+			var environment_txt = "";
+		}
+
+		if (item.hasOwnProperty("type")) {
+			var type = item["type"];
+			var type_icon = this._config["types"][type];
+
+			var type_txt = `${type_icon} `;
+		} else {
+			var type_txt = "";
+		}
+
+		return `${environment_txt}${type_txt}${item["description"]}`;
+	}
+
+	makeTreeItemTooltip(item: any): string {
+		if (item.hasOwnProperty("environment")) {
+			var environment = item["environment"];
+			var environment_icon = this._config["environments"][environment];
+
+			var environment_txt = ` [${environment_icon} · ${environment}]`
+		} else {
+			var environment_txt = "";
+		}
+
+		if (item.hasOwnProperty("type")) {
+			var type = item["type"];
+			var type_icon = this._config["types"][type];
+
+			var type_txt = ` [${type_icon} · ${type}]`
+		} else {
+			var type_txt = "";
+		}
+
+		return `${item["description"]}${type_txt}${environment_txt}`;
+	}
+
 }
 
 export class FileExplorer {
