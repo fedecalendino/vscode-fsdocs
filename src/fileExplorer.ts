@@ -270,9 +270,17 @@ export class FileSystemProvider implements vscode.TreeDataProvider<Entry>, vscod
 	// tree data provider
 
 	async getChildren(element?: Entry): Promise<Entry[]> {
-
 		if (element) {
 			const children = await this.readDirectory(element.uri);
+
+			children.sort((a, b) => {
+				if (a[1] === b[1]) {
+					return a[0].localeCompare(b[0]);
+				}
+
+				return a[1] === vscode.FileType.Directory ? -1 : 1;
+			});
+
 			return children.map(([name, type]) => ({ uri: vscode.Uri.file(path.join(element.uri.fsPath, name)), type }));
 		}
 
@@ -285,6 +293,7 @@ export class FileSystemProvider implements vscode.TreeDataProvider<Entry>, vscod
 				if (a[1] === b[1]) {
 					return a[0].localeCompare(b[0]);
 				}
+				
 				return a[1] === vscode.FileType.Directory ? -1 : 1;
 			});
 
