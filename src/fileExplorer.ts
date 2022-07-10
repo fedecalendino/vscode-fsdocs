@@ -357,47 +357,54 @@ export class FileSystemProvider implements vscode.TreeDataProvider<Entry>, vscod
 	}
 
 	makeTreeItemDescription(item: any): string {
+		var str = "";
+
 		if (item.hasOwnProperty("environment")) {
 			var environment = item["environment"];
 			var environment_icon = this._config["environments"][environment];
 
-			var environment_txt = `${environment_icon} `;
-		} else {
-			var environment_txt = "";
+			str += `${environment_icon} `;
 		}
 
 		if (item.hasOwnProperty("type")) {
 			var type = item["type"];
 			var type_icon = this._config["types"][type];
 
-			var type_txt = `${type_icon} `;
-		} else {
-			var type_txt = "";
+			str += `${type_icon} `;
 		}
 
-		return `${environment_txt}${type_txt}${item["description"]}`;
+		str += item["description"];
+
+		return str;
 	}
 
-	makeTreeItemTooltip(item: any): string {
+	makeTreeItemTooltip(item: any): vscode.MarkdownString {
+		const md = new vscode.MarkdownString();
+
+		md.appendMarkdown(`**${item["description"]}**`);
+
 		if (item.hasOwnProperty("environment")) {
 			var environment = item["environment"];
 			var environment_icon = this._config["environments"][environment];
 
-			var environment_txt = ` [${environment_icon} · ${environment}]`
-		} else {
-			var environment_txt = "";
+			md.appendMarkdown(` [${environment_icon} · ${environment}]`);
 		}
-
+		
 		if (item.hasOwnProperty("type")) {
 			var type = item["type"];
 			var type_icon = this._config["types"][type];
 
-			var type_txt = ` [${type_icon} · ${type}]`
-		} else {
-			var type_txt = "";
+			md.appendMarkdown(` [${type_icon} · ${type}]`)
 		}
 
-		return `${item["description"]}${type_txt}${environment_txt}`;
+		if (item.hasOwnProperty("comments")) {
+			var comments = item["comments"];
+			
+			md.appendText("\n\n")
+			md.appendCodeblock(comments)
+		}
+
+		return md;
 	}
 
 }

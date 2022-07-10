@@ -22,6 +22,7 @@ Include a `sidebar-descriptors.config.json` in your project:
   },
   "items": {
     "9eec0c6b-e0af-4c71-939a-15223a51e2a4": {
+      "comments": "optional extra comments",
       "description": "sub123",
       "environment": "dev",
       "type": "subscription"
