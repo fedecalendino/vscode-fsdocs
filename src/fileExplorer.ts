@@ -6,8 +6,8 @@ import * as rimraf from 'rimraf';
 import { readFileSync } from "fs";
 
 
-const EXTENSION_NAME = "sidebar-descriptor"
-const CONFIG_FILE = "sidebar-descriptors.config.json";
+const EXTENSION_NAME = "explorer-descriptions"
+const CONFIG_FILE = "explorer-descriptions.config.json";
 
 
 namespace _ {
@@ -327,6 +327,10 @@ export class FileSystemProvider implements vscode.TreeDataProvider<Entry>, vscod
 		var name: string = element.uri.toString().split("/").at(-1);
 
 		if (name.startsWith(".") || name.startsWith("__")) {
+			return undefined;
+		}
+
+		if (name == CONFIG_FILE) {
 			return undefined;
 		}
 
