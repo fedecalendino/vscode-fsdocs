@@ -61,4 +61,4 @@ Collection of identifiers to be used to match with the names of the folders/file
   * it will look for an indicator within the **types** section to show right next to the description.
 
 
-![example](./screenshots/usage.png)
+![example](https://raw.githubusercontent.com/fedecalendino/vscode-explorer-descriptions/main/images/screenshot.png)

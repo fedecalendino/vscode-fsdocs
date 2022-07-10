@@ -314,7 +314,7 @@ export class FileSystemProvider implements vscode.TreeDataProvider<Entry>, vscod
 			return JSON.parse(readFileSync(config_path).toString());
 		} catch (error) {
 			if (error.code == "ENOENT") {
-				vscode.window.showErrorMessage(`${EXTENSION_NAME}: missing config file '${CONFIG_FILE}'.`);
+				console.error(`${EXTENSION_NAME}: missing config file '${CONFIG_FILE}'.`);
 			} else if (error.name == "SyntaxError") {
 				vscode.window.showErrorMessage(`${EXTENSION_NAME}: config file is not a valid JSON file.`);
 			}
