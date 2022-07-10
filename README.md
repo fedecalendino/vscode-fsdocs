@@ -22,7 +22,7 @@ This extension requires a file `explorer-descriptions.config.json` to be added t
   },
   "items": {
     "59237813-c25f-44cb-942f-9c571214bfed": {
-      "comments": "this are just some comments",
+      "comments": "this is just a comment",
       "description": "MAIN SUB",
       "environment": "dev",
       "type": "subscription"

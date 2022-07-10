@@ -3,7 +3,7 @@
 	"displayName": "Explorer Descriptions",
 	"description": "Allow to define descriptions and comments for files and folders to show on a sidebar explorer.",
 	"icon": "images/icon.png",
-	"version": "0.1.1",
+	"version": "0.1.2",
 	"publisher": "fedecalendino",
 	"private": false,
 	"license": "MIT",
