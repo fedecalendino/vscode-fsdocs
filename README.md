@@ -1,12 +1,11 @@
-# vscode-explorer-descriptions
+# File Structure Docs
 
-Allow to define descriptions and comments for files and folders to show on a sidebar explorer.
+Allow to add labels and descriptions to document the contents of specific files and folders on your project.
 
 
 ## usage
 
-This extension requires a file `explorer-descriptions.config.json` to be added to your project, with the following structure:
-
+This extension requires a file named `fsdocs.config.json` to be added to your project, with the following structure:
 
 ```json
 {
@@ -17,28 +16,28 @@ This extension requires a file `explorer-descriptions.config.json` to be added t
   },
   "types": {
     "config-file": "📄️",
-    "resource-group": "📦️",
-    "subscription": "🔑️"
+    "package": "📦️",
+    "provider": "☁️️"
   },
   "items": {
     "59237813-c25f-44cb-942f-9c571214bfed": {
-      "comments": "this is just a comment",
-      "description": "MAIN SUB",
+      "description": "Here is more info about this provider.",
+      "label": "MAIN PROVIDER",
       "environment": "dev",
-      "type": "subscription"
+      "type": "provider"
     },
     "9eec0c6b-e0af-4c71-939a-15223a51e2a4": {
-      "description": "RG A",
-      "type": "resource-group",
+      "label": "PKG 123",
+      "type": "package",
       "environment": "dev"
     },
     "db509caa-57a2-4e46-b445-dd8555d66b63": {
-      "description": "RG B",
-      "type": "resource-group",
+      "label": "PKG 456",
+      "type": "package",
       "environment": "dev"
     },
     "deploy.json": {
-      "description": "deploy configuration",
+      "label": "deploy configuration",
       "type": "config-file"
     }
   }
@@ -47,18 +46,18 @@ This extension requires a file `explorer-descriptions.config.json` to be added t
 
 ### enviroments / types
 
-This dictionaries are used to show different indicators next to the description of an item.
+These dictionaries contain different indicators to show right next to the label of an item.
 
 ### items
 
 Collection of identifiers to be used to match with the names of the folders/files in the project. 
 
-* **description (required)**: description of the item associated with the identifier.
-* **comments (optional)**: extended description that will be shown in the tooltip of the item.
+* **label (required)**: label of the item associated with the identifier.
+* **description (optional)**: description that will be shown in the tooltip of the item.
 * **environment (optional)**: environment in which the item runs.
-  * it will look for an indicator within the **environments** section to show right next to the description.
+  * it will look for an indicator within the **environments** section.
 * **type (optional)**: type of the item.
-  * it will look for an indicator within the **types** section to show right next to the description.
+  * it will look for an indicator within the **types** section.
 
 
-![example](https://raw.githubusercontent.com/fedecalendino/vscode-explorer-descriptions/main/images/screenshot.png)
+![example](https://raw.githubusercontent.com/fedecalendino/vscode-fsdocs/main/images/screenshot.png)

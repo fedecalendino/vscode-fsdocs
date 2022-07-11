@@ -10,7 +10,7 @@
             "args": [
                 "--extensionDevelopmentPath=${workspaceRoot}",
                 "--enable-proposed-api",
-                "fedecalendino.vscode-explorer-descriptions"
+                "fedecalendino.vscode-efs-documentation"
             ],
             "stopOnEntry": false,
             "sourceMaps": true,

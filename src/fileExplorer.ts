@@ -6,8 +6,8 @@ import * as rimraf from 'rimraf';
 import { readFileSync } from "fs";
 
 
-const EXTENSION_NAME = "explorer-descriptions"
-const CONFIG_FILE = "explorer-descriptions.config.json";
+const EXTENSION_NAME = "file-structure-docs"
+const CONFIG_FILE = "fsdocs.config.json";
 
 
 namespace _ {
@@ -377,7 +377,7 @@ export class FileSystemProvider implements vscode.TreeDataProvider<Entry>, vscod
 			str += `${type_icon} `;
 		}
 
-		str += item["description"];
+		str += item["label"];
 
 		return str;
 	}
@@ -385,7 +385,7 @@ export class FileSystemProvider implements vscode.TreeDataProvider<Entry>, vscod
 	makeTreeItemTooltip(item: any): vscode.MarkdownString {
 		const md = new vscode.MarkdownString();
 
-		md.appendMarkdown(`**${item["description"]}**`);
+		md.appendMarkdown(`**${item["label"]}**`);
 
 		if (item.hasOwnProperty("environment")) {
 			var environment = item["environment"];
@@ -401,11 +401,11 @@ export class FileSystemProvider implements vscode.TreeDataProvider<Entry>, vscod
 			md.appendMarkdown(` [${type_icon} · ${type}]`)
 		}
 
-		if (item.hasOwnProperty("comments")) {
-			var comments = item["comments"];
+		if (item.hasOwnProperty("description")) {
+			var description = item["description"];
 			
 			md.appendText("\n\n")
-			md.appendCodeblock(comments)
+			md.appendCodeblock(description)
 		}
 
 		return md;

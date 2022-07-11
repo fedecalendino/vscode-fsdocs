@@ -1,15 +1,15 @@
 {
-	"name": "explorer-descriptions",
-	"displayName": "Explorer Descriptions",
-	"description": "Allow to define descriptions and comments for files and folders to show on a sidebar explorer.",
+	"name": "fsdocs",
+	"displayName": "File Structure Docs",
+	"description": "Allow to document the contents of specific files and folders on your project.",
 	"icon": "images/icon.png",
-	"version": "0.1.2",
+	"version": "0.1.0",
 	"publisher": "fedecalendino",
 	"private": false,
 	"license": "MIT",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/fedecalendino/vscode-explorer-descriptions"
+		"url": "https://github.com/fedecalendino/vscode-fsdocs"
 	},
 	"engines": {
 		"vscode": "^1.67.0"
@@ -29,7 +29,7 @@
 			"explorer": [
 				{
 					"id": "fileExplorer",
-					"name": "Explorer Descriptions"
+					"name": "File Structure Docs"
 				}
 			]
 		},
