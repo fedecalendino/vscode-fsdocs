@@ -342,7 +342,12 @@ export class FileSystemProvider implements vscode.TreeDataProvider<Entry>, vscod
 		);
 		
 		if (element.type === vscode.FileType.File) {
-			treeItem.command = { command: 'fileExplorer.openFile', title: "Open File", arguments: [element.uri], };
+			treeItem.command = { 
+				command: 'fsdocs-explorer.open', 
+				title: "Open File", 
+				arguments: [element.uri], 
+			};
+
 			treeItem.contextValue = 'file';
 		}
 
@@ -413,7 +418,7 @@ export class FileSystemProvider implements vscode.TreeDataProvider<Entry>, vscod
 
 }
 
-export class FileExplorer {
+export class FSDocsExplorer {
 	constructor(context: vscode.ExtensionContext) {
 		if (vscode.workspace.workspaceFolders === undefined) {
 			return;
@@ -428,19 +433,55 @@ export class FileExplorer {
 		fileWatcher.onDidChange(() => this.refresh(context));
 
 		vscode.commands.registerCommand(
-			'fileExplorer.openFile', 
-			(resource) => this.openResource(resource)
+			'fsdocs-explorer.open', 
+			(resource) => this.open(resource)
+		);
+
+		vscode.commands.registerCommand(
+			'fsdocs-explorer.open-config-file', 
+			(resource) => this.open(
+				vscode.workspace.openTextDocument(
+					vscode.Uri.file(
+						path.join(workspaceRoot, CONFIG_FILE)
+					)
+				)
+			)
+		);
+
+		vscode.commands.registerCommand(
+			'fsdocs-explorer.copy', 
+			(resource) => this.copy(resource)
+		);
+
+		vscode.commands.registerCommand(
+			'fsdocs-explorer.reveal', 
+			(resource) => this.reveal(resource)
 		);
 
 		this.refresh(context)
 	}
 
-	private openResource(resource: vscode.Uri): void {
+	private open(resource: any): void {
 		vscode.window.showTextDocument(resource);
+	}
+
+	private copy(resource: any): void {
+		var name: string = resource.uri.toString().split("/").at(-1);
+		vscode.env.clipboard.writeText(name);
+		vscode.window.showInformationMessage(`Copied ${name} to clipboard`);
+	}
+
+	private reveal(resource: any): void {
+		vscode.commands.executeCommand('revealInExplorer', resource.uri);
 	}
 
 	private refresh(context: vscode.ExtensionContext): void {
 		const treeDataProvider = new FileSystemProvider();
-		context.subscriptions.push(vscode.window.createTreeView('fileExplorer', { treeDataProvider }));
+		context.subscriptions.push(
+			vscode.window.createTreeView(
+				'fsdocs-explorer', 
+				{ treeDataProvider }
+			)
+		);
 	}
 }
