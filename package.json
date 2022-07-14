@@ -3,7 +3,7 @@
 	"displayName": "File Structure Docs",
 	"description": "Allow to document the contents of specific files and folders on your project.",
 	"icon": "images/icon.png",
-	"version": "0.3.0",
+	"version": "0.4.0",
 	"publisher": "fedecalendino",
 	"private": false,
 	"license": "MIT",
@@ -49,28 +49,27 @@
 					"group": "navigation",
 					"icon": "$(edit)",
 					"when": "view == fsdocs-explorer"
-				},
-				{
-					"command": "fsdocs-explorer.refresh",
-					"group": "navigation",
-					"icon": "$(reload)",
-					"when": "view == fsdocs-explorer"
 				}
 			],
 			"view/item/context": [
 				{
 					"command": "fsdocs-explorer.reveal",
+					"group": "inline",
+					"when": "view == fsdocs-explorer"
+				},
+				{
+					"command": "fsdocs-explorer.refresh",
 					"group": "1_actions",
 					"when": "view == fsdocs-explorer"
 				},
 				{
 					"command": "fsdocs-explorer.copy_name",
-					"group": "1_actions",
+					"group": "5_copypaste",
 					"when": "view == fsdocs-explorer"
 				},
 				{
 					"command": "fsdocs-explorer.copy_label",
-					"group": "1_actions",
+					"group": "5_copypaste",
 					"when": "view == fsdocs-explorer"
 				}
 			]
@@ -94,7 +93,7 @@
 			},
 			{
 				"command": "fsdocs-explorer.reveal",
-				"title": "Reveal in editor"
+				"title": "Open in editor"
 			},
 			{
 				"command": "fsdocs-explorer.refresh",
