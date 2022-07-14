@@ -49,6 +49,12 @@
 					"group": "navigation",
 					"icon": "$(edit)",
 					"when": "view == fsdocs-explorer"
+				},
+				{
+					"command": "fsdocs-explorer.refresh",
+					"group": "navigation",
+					"icon": "$(reload)",
+					"when": "view == fsdocs-explorer"
 				}
 			],
 			"view/item/context": [
@@ -89,6 +95,10 @@
 			{
 				"command": "fsdocs-explorer.reveal",
 				"title": "Reveal in editor"
+			},
+			{
+				"command": "fsdocs-explorer.refresh",
+				"title": "Refresh"
 			}
 		]
 	},

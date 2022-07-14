@@ -309,10 +309,6 @@ export class FileSystemProvider implements vscode.TreeDataProvider<Entry>, vscod
 			return undefined;
 		}
 
-		if (name == CONFIG_FILE) {
-			return undefined;
-		}
-
 		const treeItem = new vscode.TreeItem(
 			element.uri, 
 			element.type === vscode.FileType.Directory ? 
@@ -418,13 +414,7 @@ export class FSDocsExplorer {
 
 		vscode.commands.registerCommand(
 			'fsdocs-explorer.open-config-file', 
-			(resource) => this.open(
-				vscode.workspace.openTextDocument(
-					vscode.Uri.file(
-						path.join(workspaceRoot, CONFIG_FILE)
-					)
-				)
-			)
+			(resource) => this.open_config_file()
 		);
 
 		vscode.commands.registerCommand(
@@ -442,11 +432,40 @@ export class FSDocsExplorer {
 			(resource) => this.reveal(resource)
 		);
 
-		this.refresh(context)
+		vscode.commands.registerCommand(
+			'fsdocs-explorer.refresh', 
+			(resource) => this.refresh(context)
+		);
+
+		this.refresh(context);
 	}
 
 	private open(resource: any): void {
 		vscode.window.showTextDocument(resource);
+	}
+
+	private async open_config_file() {
+		const workspaceRoot = vscode.workspace.workspaceFolders[0].uri.fsPath;
+		const config_file_path = path.join(workspaceRoot, CONFIG_FILE);
+		const config_file_uri = vscode.Uri.file(config_file_path);
+
+		try {
+			await vscode.workspace.fs.stat(config_file_uri);
+			
+			vscode.workspace.openTextDocument(config_file_uri);
+			vscode.window.showTextDocument(config_file_uri);
+		} catch {
+			vscode.window.showInformationMessage(`${config_file_uri.toString()} file doesn't exist`);
+			var template: string = readFileSync("assets/fsdocs.template.json").toString();
+
+			const newFile = vscode.Uri.parse('untitled:' + config_file_path);
+			vscode.workspace.openTextDocument(newFile).then(document => {
+				const edit = new vscode.WorkspaceEdit();
+				edit.insert(newFile, new vscode.Position(0, 0), template);
+
+				return vscode.workspace.applyEdit(edit);
+			});
+		}
 	}
 
 	private copy_label(resource: any): void {
@@ -474,7 +493,7 @@ export class FSDocsExplorer {
 	}
 
 	private refresh(context: vscode.ExtensionContext): void {
-		this.loadConfiguration();
+		this.load_configuration();
 
 		const treeDataProvider = new FileSystemProvider();
 		context.subscriptions.push(
@@ -485,7 +504,7 @@ export class FSDocsExplorer {
 		);
 	}
 
-	private loadConfiguration(): any {
+	private load_configuration(): any {
 		if(vscode.workspace.workspaceFolders === undefined) {
 			return JSON.parse("{}");
 		}

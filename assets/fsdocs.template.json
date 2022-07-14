@@ -1,0 +1,17 @@
+{
+	"environments": {
+		"local": "⚪️"
+	},
+	"types": {
+		"config": "🎛️️",
+		"file": "📄️",
+		"folder": "📁️"
+	},
+	"items": {
+		"fsdocs.config.json": {
+			"label": "config file for fsdocs",
+			"environment": "local",
+			"type": "config"
+		}
+	}
+}
