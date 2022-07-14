@@ -9,6 +9,8 @@ import { readFileSync } from "fs";
 const EXTENSION_NAME = "file-structure-docs"
 const CONFIG_FILE = "fsdocs.config.json";
 
+var CONFIG: any;
+
 
 namespace _ {
 
@@ -158,10 +160,8 @@ interface Entry {
 export class FileSystemProvider implements vscode.TreeDataProvider<Entry>, vscode.FileSystemProvider {
 
 	private _onDidChangeFile: vscode.EventEmitter<vscode.FileChangeEvent[]>;
-	private _config: any;
 
 	constructor() {
-		this._config = this.loadConfiguration();
 		this._onDidChangeFile = new vscode.EventEmitter<vscode.FileChangeEvent[]>();
 	}
 
@@ -302,27 +302,6 @@ export class FileSystemProvider implements vscode.TreeDataProvider<Entry>, vscod
 		);
 	}
 
-	private loadConfiguration(): any {
-		if(vscode.workspace.workspaceFolders === undefined) {
-			return JSON.parse("{}");
-		}
-		
-		let working_directory = vscode.workspace.workspaceFolders[0].uri.fsPath;
-		const config_path = path.join(working_directory, CONFIG_FILE);
-		
-		try {
-			return JSON.parse(readFileSync(config_path).toString());
-		} catch (error) {
-			if (error.code == "ENOENT") {
-				console.error(`${EXTENSION_NAME}: missing config file '${CONFIG_FILE}'.`);
-			} else if (error.name == "SyntaxError") {
-				vscode.window.showErrorMessage(`${EXTENSION_NAME}: config file is not a valid JSON file.`);
-			}
-
-			return undefined;
-		}
-	}
-
 	getTreeItem(element: Entry): vscode.TreeItem {		
 		var name: string = element.uri.toString().split("/").at(-1);
 
@@ -351,12 +330,12 @@ export class FileSystemProvider implements vscode.TreeDataProvider<Entry>, vscod
 			treeItem.contextValue = 'file';
 		}
 
-		if (this._config === undefined) {
+		if (CONFIG === undefined) {
 			return treeItem;
 		}
 
-		if (this._config["items"].hasOwnProperty(name)) {
-			let item = this._config["items"][name];
+		if (CONFIG["items"].hasOwnProperty(name)) {
+			let item = CONFIG["items"][name];
 
 			treeItem.description = this.makeTreeItemDescription(item);
 			treeItem.tooltip = this.makeTreeItemTooltip(item);
@@ -370,14 +349,14 @@ export class FileSystemProvider implements vscode.TreeDataProvider<Entry>, vscod
 
 		if (item.hasOwnProperty("environment")) {
 			var environment = item["environment"];
-			var environment_icon = this._config["environments"][environment];
+			var environment_icon = CONFIG["environments"][environment];
 
 			str += `${environment_icon} `;
 		}
 
 		if (item.hasOwnProperty("type")) {
 			var type = item["type"];
-			var type_icon = this._config["types"][type];
+			var type_icon = CONFIG["types"][type];
 
 			str += `${type_icon} `;
 		}
@@ -394,14 +373,14 @@ export class FileSystemProvider implements vscode.TreeDataProvider<Entry>, vscod
 
 		if (item.hasOwnProperty("environment")) {
 			var environment = item["environment"];
-			var environment_icon = this._config["environments"][environment];
+			var environment_icon = CONFIG["environments"][environment];
 
 			md.appendMarkdown(` [${environment_icon} · ${environment}]`);
 		}
 		
 		if (item.hasOwnProperty("type")) {
 			var type = item["type"];
-			var type_icon = this._config["types"][type];
+			var type_icon = CONFIG["types"][type];
 
 			md.appendMarkdown(` [${type_icon} · ${type}]`)
 		}
@@ -449,8 +428,13 @@ export class FSDocsExplorer {
 		);
 
 		vscode.commands.registerCommand(
-			'fsdocs-explorer.copy', 
-			(resource) => this.copy(resource)
+			'fsdocs-explorer.copy_label', 
+			(resource) => this.copy_label(resource)
+		);
+
+		vscode.commands.registerCommand(
+			'fsdocs-explorer.copy_name', 
+			(resource) => this.copy_name(resource)
 		);
 
 		vscode.commands.registerCommand(
@@ -465,10 +449,24 @@ export class FSDocsExplorer {
 		vscode.window.showTextDocument(resource);
 	}
 
-	private copy(resource: any): void {
+	private copy_label(resource: any): void {
 		var name: string = resource.uri.toString().split("/").at(-1);
+		
+		if (CONFIG["items"].hasOwnProperty(name)) {
+			var label: string = CONFIG["items"][name]["label"]
+
+			vscode.env.clipboard.writeText(label);
+			vscode.window.showInformationMessage(`Copied '${label}' to clipboard`);
+		} else {
+			vscode.window.showErrorMessage(`Item '${name}' has no label`);
+		}
+	}
+	
+	private copy_name(resource: any): void {
+		var name: string = resource.uri.toString().split("/").at(-1);
+
 		vscode.env.clipboard.writeText(name);
-		vscode.window.showInformationMessage(`Copied ${name} to clipboard`);
+		vscode.window.showInformationMessage(`Copied '${name}' to clipboard`);
 	}
 
 	private reveal(resource: any): void {
@@ -476,6 +474,8 @@ export class FSDocsExplorer {
 	}
 
 	private refresh(context: vscode.ExtensionContext): void {
+		this.loadConfiguration();
+
 		const treeDataProvider = new FileSystemProvider();
 		context.subscriptions.push(
 			vscode.window.createTreeView(
@@ -483,5 +483,26 @@ export class FSDocsExplorer {
 				{ treeDataProvider }
 			)
 		);
+	}
+
+	private loadConfiguration(): any {
+		if(vscode.workspace.workspaceFolders === undefined) {
+			return JSON.parse("{}");
+		}
+		
+		let working_directory = vscode.workspace.workspaceFolders[0].uri.fsPath;
+		const config_path = path.join(working_directory, CONFIG_FILE);
+		
+		try {
+			CONFIG = JSON.parse(readFileSync(config_path).toString());
+		} catch (error) {
+			if (error.code == "ENOENT") {
+				console.error(`${EXTENSION_NAME}: missing config file '${CONFIG_FILE}'.`);
+			} else if (error.name == "SyntaxError") {
+				vscode.window.showErrorMessage(`${EXTENSION_NAME}: config file is not a valid JSON file.`);
+			}
+
+			CONFIG = undefined;
+		}
 	}
 }

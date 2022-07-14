@@ -58,7 +58,12 @@
 					"when": "view == fsdocs-explorer"
 				},
 				{
-					"command": "fsdocs-explorer.copy",
+					"command": "fsdocs-explorer.copy_name",
+					"group": "1_actions",
+					"when": "view == fsdocs-explorer"
+				},
+				{
+					"command": "fsdocs-explorer.copy_label",
 					"group": "1_actions",
 					"when": "view == fsdocs-explorer"
 				}
@@ -70,7 +75,11 @@
 				"title": "Open file"
 			},
 			{
-				"command": "fsdocs-explorer.copy",
+				"command": "fsdocs-explorer.copy_label",
+				"title": "Copy label"
+			},
+			{
+				"command": "fsdocs-explorer.copy_name",
 				"title": "Copy name"
 			},
 			{
