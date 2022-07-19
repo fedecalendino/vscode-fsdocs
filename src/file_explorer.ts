@@ -164,7 +164,7 @@ export class FSDocsFileExplorer {
 
 	private searchElement(context: vscode.ExtensionContext) {
 		const options: vscode.InputBoxOptions = {
-			prompt: "Search in fsdocs labels and descriptions",
+			prompt: "Search in fsdocs labels and file/folder names",
 			placeHolder: "text to search"
 		};
 		

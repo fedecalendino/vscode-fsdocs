@@ -53,7 +53,11 @@
 				{
 					"command": "fsdocs-file-explorer.search-element",
 					"group": "navigation",
-					"icon": "$(search)",
+					"when": "view == fsdocs-file-explorer"
+				},
+				{
+					"command": "fsdocs-file-explorer.refresh-tree",
+					"group": "navigation",
 					"when": "view == fsdocs-file-explorer"
 				}
 			],
@@ -61,11 +65,6 @@
 				{
 					"command": "fsdocs-file-explorer.reveal-element",
 					"group": "inline",
-					"when": "view == fsdocs-file-explorer"
-				},
-				{
-					"command": "fsdocs-file-explorer.refresh-tree",
-					"group": "1_actions",
 					"when": "view == fsdocs-file-explorer"
 				},
 				{
@@ -86,10 +85,6 @@
 				"title": "Open file"
 			},
 			{
-				"command": "fsdocs-file-explorer.open-config-file",
-				"title": "Open config file"
-			},
-			{
 				"command": "fsdocs-file-explorer.copy-element-label",
 				"title": "Copy label"
 			},
@@ -99,15 +94,22 @@
 			},
 			{
 				"command": "fsdocs-file-explorer.reveal-element",
-				"title": "Open in editor"
+				"title": "Reveal in editor"
+			},
+			{
+				"command": "fsdocs-file-explorer.open-config-file",
+				"title": "Open config file",
+				"icon": "$(pencil)"
 			},
 			{
 				"command": "fsdocs-file-explorer.refresh-tree",
-				"title": "Refresh"
+				"title": "Refresh",
+				"icon": "$(refresh)"
 			},
 			{
 				"command": "fsdocs-file-explorer.search-element",
-				"title": "Search"
+				"title": "Search",
+				"icon": "$(search)"
 			}
 		]
 	},
