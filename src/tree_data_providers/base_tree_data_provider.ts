@@ -222,6 +222,20 @@ export abstract class BaseFileSystemProvider implements vscode.TreeDataProvider<
 		return _.rename(oldUri.fsPath, newUri.fsPath);
 	}
 
+	getParent(element: Entry): vscode.ProviderResult<Entry> {
+		const working_directory = vscode.workspace.workspaceFolders[0].uri.fsPath;
+		const dir: string = path.dirname(element.uri.fsPath);
+		
+		if  (dir == working_directory) {
+			return undefined;
+		}
+
+		return {
+			uri: vscode.Uri.file(dir),
+			type: 2,
+		};
+	}
+
 	async getChildren(element?: Entry): Promise<Entry[]> {
 		let uri = undefined;
 

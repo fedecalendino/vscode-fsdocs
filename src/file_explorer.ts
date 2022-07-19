@@ -1,7 +1,9 @@
+/* eslint-disable no-prototype-builtins */
 import * as vscode from 'vscode';
 import * as path from 'path';
-import { readFileSync } from "fs";
+import { readdirSync, readFileSync } from "fs";
 
+import { Entry } from "./tree_data_providers/entry";
 import { MainTreeDataProvider } from './tree_data_providers/main_tree_data_provider';
 
 
@@ -9,9 +11,11 @@ const EXTENSION_NAME = "file-structure-docs";
 const CONFIG_FILE = "fsdocs.config.json";
 
 
+
 export class FSDocsFileExplorer {
 
 	private config: JSON;
+	private treeView: vscode.TreeView<Entry>;
 
 	constructor(context: vscode.ExtensionContext) {
 		if (vscode.workspace.workspaceFolders === undefined) {
@@ -64,6 +68,11 @@ export class FSDocsFileExplorer {
 		vscode.commands.registerCommand(
 			'fsdocs-file-explorer.refresh-tree', 
 			(resource) => this.refreshTree(context)
+		);
+
+		vscode.commands.registerCommand(
+			'fsdocs-file-explorer.search-element', 
+			(resource) => this.searchElement(context)
 		);
 	}
 
@@ -145,12 +154,87 @@ export class FSDocsFileExplorer {
 		this.config = this.readConfiguration();
 
 		const treeDataProvider = new MainTreeDataProvider(this.config);
-		
-		context.subscriptions.push(
-			vscode.window.createTreeView(
-				'fsdocs-file-explorer', 
-				{ treeDataProvider }
-			)
+		this.treeView = vscode.window.createTreeView(
+			'fsdocs-file-explorer', 
+			{ treeDataProvider }
 		);
+
+		context.subscriptions.push(this.treeView);
+	}
+
+	private searchElement(context: vscode.ExtensionContext) {
+		const options: vscode.InputBoxOptions = {
+			prompt: "Search in fsdocs labels and descriptions",
+			placeHolder: "text to search"
+		};
+		
+		vscode.window.showInputBox(options).then(value => {
+			if (!value) {
+				return;
+			}
+			
+			this.revealFilesAndFolders(value.toLowerCase());
+			this.refreshTree(context);
+		});
+	}
+
+	private revealFilesAndFolders(searchText: string) {
+		const workspaceRoot = vscode.workspace.workspaceFolders[0].uri.fsPath;
+		
+		this._revealFilesAndFolders(
+			workspaceRoot.toString(), 
+			searchText
+		);
+	}
+
+	private _revealFilesAndFolders(root: string, searchText: string) {		
+		readdirSync(root, {withFileTypes: true }).forEach(
+			(dirent) => {
+				const path = `${root}/${dirent.name}`;
+
+				if (this._shouldReveal(dirent.name, searchText)) {
+					this.treeView.reveal(
+						{
+							uri: vscode.Uri.file(path),
+							type: dirent.isDirectory()? 2 : 1,
+						}
+					);
+				}
+
+				if (dirent.isDirectory()) { 
+					this._revealFilesAndFolders(path, searchText);
+				}
+			}
+		);
+	}
+	
+	private _shouldReveal(name: string, searchText: string): boolean {
+		if (name.includes(searchText)) {
+			return true;
+		}
+
+		if (!this.config["items"].hasOwnProperty(name)) {
+			return false;
+		}
+
+		const item = this.config["items"][name];
+
+		if (item.hasOwnProperty("label")) {
+			const label = item["label"].toLowerCase();
+				
+			if (label.includes(searchText)) {
+				return true;
+			}
+		}
+
+		if (item.hasOwnProperty("description")) {
+			const description = item["description"].toLowerCase();
+				
+			if (description.includes(searchText)) {
+				return true;
+			}
+		}
+		
+		return false;
 	}
 }

@@ -49,6 +49,12 @@
 					"group": "navigation",
 					"icon": "$(edit)",
 					"when": "view == fsdocs-file-explorer"
+				},
+				{
+					"command": "fsdocs-file-explorer.search-element",
+					"group": "navigation",
+					"icon": "$(search)",
+					"when": "view == fsdocs-file-explorer"
 				}
 			],
 			"view/item/context": [
@@ -98,6 +104,10 @@
 			{
 				"command": "fsdocs-file-explorer.refresh-tree",
 				"title": "Refresh"
+			},
+			{
+				"command": "fsdocs-file-explorer.search-element",
+				"title": "Search"
 			}
 		]
 	},
