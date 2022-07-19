@@ -3,6 +3,7 @@ import * as vscode from 'vscode';
 
 import { BaseFileSystemProvider as BaseTreeDataProvider } from "./base_tree_data_provider";
 import { Entry } from "./entry";
+import { EXCLUDE } from "../config";
 
 
 export class MainTreeDataProvider extends BaseTreeDataProvider {
@@ -18,7 +19,7 @@ export class MainTreeDataProvider extends BaseTreeDataProvider {
 	getTreeItem(element: Entry): vscode.TreeItem {		
 		const name: string = element.uri.toString().split("/").at(-1);
 
-		if (name.startsWith(".") || name.startsWith("__")) {
+		if (EXCLUDE.includes(name)) {
 			return undefined;
 		}
 

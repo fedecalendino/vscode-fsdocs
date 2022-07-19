@@ -5,7 +5,7 @@ import { readdirSync, readFileSync } from "fs";
 
 import { Entry } from "./tree_data_providers/entry";
 import { MainTreeDataProvider } from './tree_data_providers/main_tree_data_provider';
-
+import { EXCLUDE } from './config';
 
 const EXTENSION_NAME = "file-structure-docs";
 const CONFIG_FILE = "fsdocs.config.json";
@@ -173,8 +173,15 @@ export class FSDocsFileExplorer {
 				return;
 			}
 			
-			this.revealFilesAndFolders(value.toLowerCase());
-			this.refreshTree(context);
+			vscode.window.withProgress(
+				{ 
+					location: vscode.ProgressLocation.Window, 
+					title: `Searching for ${value}` }, 
+					async () => {
+						this.revealFilesAndFolders(value.toLowerCase());
+						this.refreshTree(context);
+					}
+				);
 		});
 	}
 
@@ -187,7 +194,13 @@ export class FSDocsFileExplorer {
 		);
 	}
 
-	private _revealFilesAndFolders(root: string, searchText: string) {		
+	private _revealFilesAndFolders(root: string, searchText: string) {
+		const name: string = root.split("/").at(-1);
+
+		if (EXCLUDE.includes(root)) {
+			return undefined;
+		}
+
 		readdirSync(root, {withFileTypes: true }).forEach(
 			(dirent) => {
 				const path = `${root}/${dirent.name}`;
@@ -207,7 +220,7 @@ export class FSDocsFileExplorer {
 			}
 		);
 	}
-	
+
 	private _shouldReveal(name: string, searchText: string): boolean {
 		if (name.includes(searchText)) {
 			return true;
@@ -227,13 +240,13 @@ export class FSDocsFileExplorer {
 			}
 		}
 
-		if (item.hasOwnProperty("description")) {
-			const description = item["description"].toLowerCase();
+		// if (item.hasOwnProperty("description")) {
+		// 	const description = item["description"].toLowerCase();
 				
-			if (description.includes(searchText)) {
-				return true;
-			}
-		}
+		// 	if (description.includes(searchText)) {
+		// 		return true;
+		// 	}
+		// }
 		
 		return false;
 	}
