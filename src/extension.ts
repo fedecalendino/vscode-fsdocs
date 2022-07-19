@@ -2,8 +2,8 @@
 
 import * as vscode from 'vscode';
 
-import { FSDocsExplorer } from './explorer';
+import { FSDocsFileExplorer } from './explorer';
 
 export function activate(context: vscode.ExtensionContext) {
-	new FSDocsExplorer(context);
+	new FSDocsFileExplorer(context);
 }

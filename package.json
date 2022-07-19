@@ -18,7 +18,7 @@
 		"Other"
 	],
 	"activationEvents": [
-		"onView:fsdocs-explorer",
+		"onView:fsdocs-file-explorer",
 		"onLanguage:json",
 		"onLanguage:jsonc",
 		"onCommand:testView.reveal"
@@ -37,7 +37,7 @@
 		"views": {
 			"fsdocs-activity-bar": [
 				{
-					"id": "fsdocs-explorer",
+					"id": "fsdocs-file-explorer",
 					"name": "File Structure Docs"
 				}
 			]
@@ -45,58 +45,58 @@
 		"menus": {
 			"view/title": [
 				{
-					"command": "fsdocs-explorer.open-config-file",
+					"command": "fsdocs-file-explorer.open-config-file",
 					"group": "navigation",
 					"icon": "$(edit)",
-					"when": "view == fsdocs-explorer"
+					"when": "view == fsdocs-file-explorer"
 				}
 			],
 			"view/item/context": [
 				{
-					"command": "fsdocs-explorer.reveal",
+					"command": "fsdocs-file-explorer.reveal-element",
 					"group": "inline",
-					"when": "view == fsdocs-explorer"
+					"when": "view == fsdocs-file-explorer"
 				},
 				{
-					"command": "fsdocs-explorer.refresh",
+					"command": "fsdocs-file-explorer.refresh-tree",
 					"group": "1_actions",
-					"when": "view == fsdocs-explorer"
+					"when": "view == fsdocs-file-explorer"
 				},
 				{
-					"command": "fsdocs-explorer.copy_name",
+					"command": "fsdocs-file-explorer.copy-element-name",
 					"group": "5_copypaste",
-					"when": "view == fsdocs-explorer"
+					"when": "view == fsdocs-file-explorer"
 				},
 				{
-					"command": "fsdocs-explorer.copy_label",
+					"command": "fsdocs-file-explorer.copy-element-label",
 					"group": "5_copypaste",
-					"when": "view == fsdocs-explorer"
+					"when": "view == fsdocs-file-explorer"
 				}
 			]
 		},
 		"commands": [
 			{
-				"command": "fsdocs-explorer.open",
+				"command": "fsdocs-file-explorer.open-file",
 				"title": "Open file"
 			},
 			{
-				"command": "fsdocs-explorer.copy_label",
-				"title": "Copy label"
-			},
-			{
-				"command": "fsdocs-explorer.copy_name",
-				"title": "Copy name"
-			},
-			{
-				"command": "fsdocs-explorer.open-config-file",
+				"command": "fsdocs-file-explorer.open-config-file",
 				"title": "Open config file"
 			},
 			{
-				"command": "fsdocs-explorer.reveal",
+				"command": "fsdocs-file-explorer.copy-element-label",
+				"title": "Copy label"
+			},
+			{
+				"command": "fsdocs-file-explorer.copy-element-name",
+				"title": "Copy name"
+			},
+			{
+				"command": "fsdocs-file-explorer.reveal-element",
 				"title": "Open in editor"
 			},
 			{
-				"command": "fsdocs-explorer.refresh",
+				"command": "fsdocs-file-explorer.refresh-tree",
 				"title": "Refresh"
 			}
 		]
