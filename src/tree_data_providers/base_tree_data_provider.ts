@@ -4,8 +4,8 @@ import * as fs from 'fs';
 import * as mkdirp from 'mkdirp';
 import * as rimraf from 'rimraf';
 
-import { Entry } from "./entry"
-import { FileStat } from "./file_stat"
+import { Entry } from "./entry";
+import { FileStat } from "./file_stat";
 
 
 namespace _ {
@@ -223,7 +223,7 @@ export abstract class BaseFileSystemProvider implements vscode.TreeDataProvider<
 	}
 
 	async getChildren(element?: Entry): Promise<Entry[]> {
-		var uri = undefined;
+		let uri = undefined;
 
 		if (element) {
 			uri = element.uri;

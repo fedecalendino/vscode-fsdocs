@@ -1,21 +1,22 @@
+/* eslint-disable no-prototype-builtins */
 import * as vscode from 'vscode';
 
 import { BaseFileSystemProvider as BaseTreeDataProvider } from "./base_tree_data_provider";
-import { Entry } from "./entry"
+import { Entry } from "./entry";
 
 
 export class MainTreeDataProvider extends BaseTreeDataProvider {
 	
-	protected config: any;
+	protected config: JSON;
 
-	constructor(config: any)
+	constructor(config: JSON)
 	{
 		super();
 		this.config = config;
 	}
 
 	getTreeItem(element: Entry): vscode.TreeItem {		
-		var name: string = element.uri.toString().split("/").at(-1);
+		const name: string = element.uri.toString().split("/").at(-1);
 
 		if (name.startsWith(".") || name.startsWith("__")) {
 			return undefined;
@@ -42,8 +43,9 @@ export class MainTreeDataProvider extends BaseTreeDataProvider {
 			return treeItem;
 		}
 
+		// eslint-disable-next-line no-prototype-builtins
 		if (this.config["items"].hasOwnProperty(name)) {
-			let item = this.config["items"][name];
+			const item = this.config["items"][name];
 			
 			treeItem.description = this.makeTreeItemDescription(item);
 			treeItem.tooltip = this.makeTreeItemTooltip(item);
@@ -53,18 +55,18 @@ export class MainTreeDataProvider extends BaseTreeDataProvider {
 	}
 
 	makeTreeItemDescription(item: any): string {
-		var str = "";
+		let str = "";
 
 		if (item.hasOwnProperty("environment")) {
-			var environment = item["environment"];
-			var environment_icon = this.config["environments"][environment];
+			const environment = item["environment"];
+			const environment_icon = this.config["environments"][environment];
 
 			str += `${environment_icon} `;
 		}
 
 		if (item.hasOwnProperty("type")) {
-			var type = item["type"];
-			var type_icon = this.config["types"][type];
+			const type = item["type"];
+			const type_icon = this.config["types"][type];
 
 			str += `${type_icon} `;
 		}
@@ -80,24 +82,24 @@ export class MainTreeDataProvider extends BaseTreeDataProvider {
 		md.appendMarkdown(`**${item["label"]}**`);
 
 		if (item.hasOwnProperty("environment")) {
-			var environment = item["environment"];
-			var environment_icon = this.config["environments"][environment];
+			const environment = item["environment"];
+			const environment_icon = this.config["environments"][environment];
 
 			md.appendMarkdown(` [${environment_icon} · ${environment}]`);
 		}
 		
 		if (item.hasOwnProperty("type")) {
-			var type = item["type"];
-			var type_icon = this.config["types"][type];
+			const type = item["type"];
+			const type_icon = this.config["types"][type];
 
-			md.appendMarkdown(` [${type_icon} · ${type}]`)
+			md.appendMarkdown(` [${type_icon} · ${type}]`);
 		}
 
 		if (item.hasOwnProperty("description")) {
-			var description = item["description"];
+			const description = item["description"];
 			
-			md.appendText("\n\n")
-			md.appendCodeblock(description)
+			md.appendText("\n\n");
+			md.appendCodeblock(description);
 		}
 
 		return md;

@@ -5,13 +5,13 @@ import { readFileSync } from "fs";
 import { MainTreeDataProvider } from './tree_data_providers/main_tree_data_provider';
 
 
-const EXTENSION_NAME = "file-structure-docs"
+const EXTENSION_NAME = "file-structure-docs";
 const CONFIG_FILE = "fsdocs.config.json";
 
 
 export class FSDocsFileExplorer {
 
-	private config: any;
+	private config: JSON;
 
 	constructor(context: vscode.ExtensionContext) {
 		if (vscode.workspace.workspaceFolders === undefined) {
@@ -31,7 +31,7 @@ export class FSDocsFileExplorer {
 	private registerWatchers(workspaceRoot: string, context: vscode.ExtensionContext) {
 		const pattern = path.join(workspaceRoot, '*');
 
-		let fileWatcher = vscode.workspace.createFileSystemWatcher(pattern);
+		const fileWatcher = vscode.workspace.createFileSystemWatcher(pattern);
 		fileWatcher.onDidChange(() => this.refreshTree(context));
 	}
 
@@ -72,7 +72,7 @@ export class FSDocsFileExplorer {
 			return JSON.parse("{}");
 		}
 		
-		let working_directory = vscode.workspace.workspaceFolders[0].uri.fsPath;
+		const working_directory = vscode.workspace.workspaceFolders[0].uri.fsPath;
 		const config_path = path.join(working_directory, CONFIG_FILE);
 		
 		try {
@@ -104,7 +104,7 @@ export class FSDocsFileExplorer {
 			vscode.window.showTextDocument(config_file_uri);
 		} catch {
 			vscode.window.showInformationMessage(`${config_file_uri.toString()} file doesn't exist`);
-			var template: string = readFileSync("assets/fsdocs.template.json").toString();
+			const template: string = readFileSync("assets/fsdocs.template.json").toString();
 
 			const newFile = vscode.Uri.parse('untitled:' + config_file_path);
 			vscode.workspace.openTextDocument(newFile).then(document => {
@@ -117,10 +117,11 @@ export class FSDocsFileExplorer {
 	}
 
 	private copyElementLabel(resource: any): void {
-		var name: string = resource.uri.toString().split("/").at(-1);
+		const name: string = resource.uri.toString().split("/").at(-1);
 		
+		// eslint-disable-next-line no-prototype-builtins
 		if (this.config["items"].hasOwnProperty(name)) {
-			var label: string = this.config["items"][name]["label"]
+			const label: string = this.config["items"][name]["label"];
 
 			vscode.env.clipboard.writeText(label);
 			vscode.window.showInformationMessage(`Copied '${label}' to clipboard`);
@@ -130,7 +131,7 @@ export class FSDocsFileExplorer {
 	}
 	
 	private copyElementName(resource: any): void {
-		var name: string = resource.uri.toString().split("/").at(-1);
+		const name: string = resource.uri.toString().split("/").at(-1);
 
 		vscode.env.clipboard.writeText(name);
 		vscode.window.showInformationMessage(`Copied '${name}' to clipboard`);
