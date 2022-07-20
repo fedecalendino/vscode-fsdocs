@@ -1,7 +1,7 @@
 /* eslint-disable no-prototype-builtins */
 import * as vscode from 'vscode';
 
-import { Config } from './config';
+import { Config, ConfigItem } from './config';
 import { BaseFileSystemProvider as BaseTreeDataProvider } from "./tree_data_providers/base";
 import { Entry } from "./tree_data_providers/entry";
 
@@ -48,67 +48,69 @@ export class MainTreeDataProvider extends BaseTreeDataProvider {
 			return treeItem;
 		}
 
+		const item = this.config.getItem(name);
+
+		if (!item)
+			return treeItem;
+
 		// eslint-disable-next-line no-prototype-builtins
-		treeItem.description = this.makeTreeItemDescription(name);
-		treeItem.tooltip = this.makeTreeItemTooltip(name);
+		treeItem.description = this.makeTreeItemDescription(item);
+		treeItem.tooltip = this.makeTreeItemTooltip(item);
 
 		return treeItem;
 	}
 
-	makeTreeItemDescription(name: string): string {
+	makeTreeItemDescription(item: ConfigItem): string {
 		let str = "";
 
-		const [environment, environment_icon] = this.config.getEnvironment(name);
-
-		if (environment) {
-			if (environment_icon)
-				str += `${environment_icon} `;
+		if (item.environment) {
+			if (item.environment_icon)
+				str += `${item.environment_icon} `;
 			else
-				str += `${environment} `;
+				str += `${item.environment} `;
 		}
 
-		const [type, type_icon] = this.config.getType(name);
-
-		if (type) {
-			if (type_icon)
-				str += `${type_icon} `;
+		if (item.type) {
+			if (item.type_icon)
+				str += `${item.type_icon} `;
 			else
-				str += `${type} `;
+				str += `${item.type} `;
 		}
 
-		const label = this.config.getLabel(name);
+		str += `${item.label}`;
 
-		if (this.searchText && label.toLowerCase().includes(this.searchText))
-			str += `${label}  🔍`;
-		else
-			str += `${label}`;
-
+		if (this.searchText) {
+			if (item.label && item.label.toLowerCase().includes(this.searchText))
+				str += `  🔍`;
+			else if (item.description  && item.description.toLowerCase().includes(this.searchText))
+				str += `  🔍`;
+		}
+		
 		return str;
 	}
 
-	makeTreeItemTooltip(name: string): vscode.MarkdownString {
+	makeTreeItemTooltip(item: ConfigItem): vscode.MarkdownString {
 		const md = new vscode.MarkdownString();
 
-		const label = this.config.getLabel(name);
-		const description = this.config.getDescription(name);
+		md.appendMarkdown(`**${item.label}**`);
 
-		md.appendMarkdown(`**${label}**`);
-
-		const [environment, environment_icon] = this.config.getEnvironment(name);
-
-		if (environment) {
-			md.appendMarkdown(` [${environment_icon} · ${environment}]`);
+		if (item.environment) {
+			if (item.environment_icon)
+				md.appendMarkdown(` [${item.environment_icon} · ${item.environment}]`);
+			else
+				md.appendMarkdown(` [${item.environment}]`);
 		}
 		
-		const [type, type_icon] = this.config.getType(name);
-
-		if (type) {
-			md.appendMarkdown(` [${type_icon} · ${type}]`);
+		if (item.type) {
+			if (item.type_icon)
+				md.appendMarkdown(` [${item.type_icon} · ${item.type}]`);
+			else
+				md.appendMarkdown(` [${item.type}]`);
 		}
 
-		if (description) {
+		if (item.description) {
 			md.appendText("\n\n");
-			md.appendCodeblock(description);
+			md.appendCodeblock(item.description);
 		}
 
 		return md;

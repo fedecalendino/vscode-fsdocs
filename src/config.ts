@@ -6,6 +6,34 @@ import * as vscode from 'vscode';
 import { CONFIG_FILENAME, EXTENSION_NAME } from "./constants";
 
 
+export class ConfigItem {
+
+	public label?: string;
+	public description?: string;
+	public environment?: string;
+	public environment_icon?: string;
+	public type?: string;
+	public type_icon?: string;
+
+	constructor(config: Config, data: JSON) {
+		if (data.hasOwnProperty("label"))
+			this.label = data["label"];
+		
+		if (data.hasOwnProperty("description"))
+			this.description = data["description"];
+		
+		if (data.hasOwnProperty("environment")) {
+			this.environment = data["environment"];
+			this.environment_icon = config.getEnvironmentIcon(this.environment);
+		}
+
+		if (data.hasOwnProperty("type")) {
+			this.type = data["type"];
+			this.type_icon = config.getTypeIcon(this.type);
+		}
+	}
+}
+
 export class Config {
 
 	private data: JSON; 
@@ -37,53 +65,25 @@ export class Config {
 		return this.data["excluded"];
 	}
 
-	public getItem(name: string): JSON {
+	public getItem(name: string): ConfigItem {
 		if (!this.data["items"].hasOwnProperty(name))
 			return undefined;
 		
-		return this.data["items"][name];
+		return new ConfigItem(this, this.data["items"][name]);
 	}
 
-	public getLabel(name: string): string {
-		const item = this.getItem(name);
-
-		if (!item || !item.hasOwnProperty("label"))
-			return "";
+	public getEnvironmentIcon(environment: string): string {
+		if (!this.data.hasOwnProperty("environments"))
+			return undefined;
 		
-		return item["label"];
+		return this.data["environments"][environment];
 	}
 
-	public getDescription(name: string): string {
-		const item = this.getItem(name);
-
-		if (!item || !item.hasOwnProperty("description"))
-			return "";
+	public getTypeIcon(type: string): string {
+		if (!this.data.hasOwnProperty("types"))
+			return undefined;
 		
-		return item["description"];
-	}
-
-	public getEnvironment(name: string): Array<string> {
-		const item = this.getItem(name);
-
-		if (!item || !item.hasOwnProperty("environment"))
-			return [undefined, undefined];
-		
-		const environment = item["environment"];
-		const icon = this.data["environments"][environment];
-
-		return [environment, icon];
-	}
-
-	public getType(name: string): Array<string> {
-		const item = this.getItem(name);
-
-		if (!item || !item.hasOwnProperty("type"))
-			return [undefined, undefined];
-		
-		const type = item["type"];
-		const icon = this.data["types"][type];
-
-		return [type, icon];
+		return this.data["types"][type];
 	}
 
 	static uri(): vscode.Uri {
@@ -95,5 +95,4 @@ export class Config {
 		
 		return vscode.Uri.file(config_file_path);
 	}
-
 }

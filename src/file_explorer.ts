@@ -147,21 +147,25 @@ export class FSDocsFileExplorer {
 		
 		this.treeView = vscode.window.createTreeView(
 			'fsdocs-file-explorer', 
-			{ treeDataProvider }
+			{ 
+				treeDataProvider: treeDataProvider,
+				showCollapseAll: true 
+			}
 		);
 
 		context.subscriptions.push(this.treeView);
 	}
 
-	private searchElement(context: vscode.ExtensionContext) {
+	private async searchElement(context: vscode.ExtensionContext) {
 		const options: vscode.InputBoxOptions = {
-			prompt: "Search in fsdocs labels and file/folder names",
-			placeHolder: "text to search"
+			prompt: "Search in fsdocs labels and descriptions",
+			placeHolder: "(found items will be highlighted with a 🔍)"
 		};
 		
 		vscode.window.showInputBox(options).then(value => {
 			if (value) {
 				this.searchText = value.toLowerCase();
+				vscode.commands.executeCommand('workbench.actions.treeView.fsdocs-file-explorer.collapseAll');
 				this.revealFilesAndFolders(this.searchText);
 			} else {
 				this.searchText = undefined;
@@ -181,14 +185,11 @@ export class FSDocsFileExplorer {
 	}
 
 	private _revealFilesAndFolders(root: string, searchText: string) {
-		const name: string = root.split("/").at(-1);
-
-		if (this.config.excluded().includes(name)) {
-			return undefined;
-		}
-
 		readdirSync(root, {withFileTypes: true}).forEach(
 			(dirent) => {
+				if (this.config.excluded().includes(dirent.name))
+					return;
+
 				const path = `${root}/${dirent.name}`;
 
 				if (this._shouldReveal(dirent.name, searchText)) {
@@ -207,17 +208,15 @@ export class FSDocsFileExplorer {
 	}
 
 	private _shouldReveal(name: string, searchText: string): boolean {
-		if (name.includes(searchText))
-			return true;
-
-		const label = this.config.getLabel(name);
+		const item = this.config.getItem(name);
 		
-		if (label && label.toLowerCase().includes(searchText))
-			return true;
+		if (!item)
+			return false;
 		
-		const description = this.config.getDescription(name);
+		if (item.label !== undefined && item.label.toLowerCase().includes(searchText))
+			return true;
 	
-		if (description && description.toLowerCase().includes(searchText))
+		if (item.description !== undefined  && item.description.toLowerCase().includes(searchText))
 			return true;
 
 		return false;
