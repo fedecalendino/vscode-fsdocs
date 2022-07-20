@@ -199,6 +199,8 @@ export class FSDocsFileExplorer {
 							type: dirent.isDirectory()? 2 : 1,
 						}
 					);
+
+					return;
 				}
 
 				if (dirent.isDirectory())
