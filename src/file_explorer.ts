@@ -18,11 +18,10 @@ export class FSDocsFileExplorer {
 	private treeView: vscode.TreeView<Entry>;
 
 	constructor(context: vscode.ExtensionContext) {
-		if (vscode.workspace.workspaceFolders === undefined) {
+		if (vscode.workspace.workspaceFolders === undefined)
 			return;
-		} else if (vscode.workspace.workspaceFolders.length == 0) {
-			return;
-		} 
+		else if (vscode.workspace.workspaceFolders.length == 0)
+			return; 
 		
 		const workspaceRoot = vscode.workspace.workspaceFolders[0].uri.fsPath;
 		
