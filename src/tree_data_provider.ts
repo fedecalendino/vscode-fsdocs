@@ -1,9 +1,9 @@
 /* eslint-disable no-prototype-builtins */
 import * as vscode from 'vscode';
 
-import { BaseFileSystemProvider as BaseTreeDataProvider } from "./base_tree_data_provider";
-import { Entry } from "./entry";
-import { Config } from '../config';
+import { Config } from './config';
+import { BaseFileSystemProvider as BaseTreeDataProvider } from "./tree_data_providers/base";
+import { Entry } from "./tree_data_providers/entry";
 
 
 export class MainTreeDataProvider extends BaseTreeDataProvider {

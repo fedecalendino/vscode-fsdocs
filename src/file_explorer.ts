@@ -5,7 +5,7 @@ import { readdirSync, readFileSync } from "fs";
 
 import { Config } from "./config";
 import { Entry } from "./tree_data_providers/entry";
-import { MainTreeDataProvider } from './tree_data_providers/main_tree_data_provider';
+import { MainTreeDataProvider } from './tree_data_provider';
 
 
 export class FSDocsFileExplorer {
