@@ -1,7 +1,7 @@
 /* eslint-disable no-prototype-builtins */
-import * as vscode from 'vscode';
-import * as path from 'path';
 import { readFileSync } from "fs";
+import * as path from 'path';
+import * as vscode from 'vscode';
 
 import { CONFIG_FILENAME, EXTENSION_NAME } from "./constants";
 

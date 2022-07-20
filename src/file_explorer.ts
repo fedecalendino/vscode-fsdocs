@@ -1,11 +1,11 @@
 /* eslint-disable no-prototype-builtins */
-import * as vscode from 'vscode';
-import * as path from 'path';
 import { readdirSync, readFileSync } from "fs";
+import * as path from 'path';
+import * as vscode from 'vscode';
 
 import { Config } from "./config";
-import { Entry } from "./tree_data_providers/entry";
 import { MainTreeDataProvider } from './tree_data_provider';
+import { Entry } from "./tree_data_providers/entry";
 
 
 export class FSDocsFileExplorer {
