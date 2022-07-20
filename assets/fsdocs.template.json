@@ -1,19 +1,28 @@
 {
 	"info" : {
 		"about": "This file is meant to be used with the FSDocs VSCode extenstion",
-		"url": "https://marketplace.visualstudio.com/items?itemName=fedecalendino.fsdocs",
-		"authors": [
-			"You <you@example.com>"
-		]
+		"url": "https://marketplace.visualstudio.com/items?itemName=fedecalendino.fsdocs"
 	},
+
+	"authors": [
+		"You <you@example.com>"
+	],
+
+	"exclude": [
+		".git",
+		".vscode"
+	],
+
 	"environments": {
 		"local": "⚪️"
 	},
+
 	"types": {
 		"config": "🎛️️",
 		"file": "📄️",
 		"folder": "📁️"
 	},
+	
 	"items": {
 		"fsdocs.config.json": {
 			"label": "config file for fsdocs",

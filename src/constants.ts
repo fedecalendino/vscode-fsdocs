@@ -1,7 +1,3 @@
-export const EXCLUDE = [
-	".git",
-	".vscode",
-	"node_modules",
-	"venv",
-	".venv",
-];
+export const CONFIG_FILENAME = "fsdocs.config.json";
+
+export const EXTENSION_NAME = "file-structure-docs";
