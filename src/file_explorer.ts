@@ -216,9 +216,14 @@ export class FSDocsFileExplorer {
 
 		const label = this.config.getLabel(name);
 		
-		if (label === undefined)
-			return false;
-			
-		return label.toLowerCase().includes(searchText);
+		if (label && label.toLowerCase().includes(searchText))
+			return true;
+		
+		const description = this.config.getDescription(name);
+	
+		if (description && description.toLowerCase().includes(searchText))
+			return true;
+
+		return false;
 	}
 }
