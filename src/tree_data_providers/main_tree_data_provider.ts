@@ -3,7 +3,7 @@ import * as vscode from 'vscode';
 
 import { BaseFileSystemProvider as BaseTreeDataProvider } from "./base_tree_data_provider";
 import { Entry } from "./entry";
-import { EXCLUDE } from "../config";
+import { EXCLUDE } from "../constants";
 
 
 export class MainTreeDataProvider extends BaseTreeDataProvider {

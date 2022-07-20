@@ -5,7 +5,7 @@ import { readdirSync, readFileSync } from "fs";
 
 import { Entry } from "./tree_data_providers/entry";
 import { MainTreeDataProvider } from './tree_data_providers/main_tree_data_provider';
-import { EXCLUDE } from './config';
+import { EXCLUDE } from './constants';
 
 const EXTENSION_NAME = "file-structure-docs";
 const CONFIG_FILE = "fsdocs.config.json";
