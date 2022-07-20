@@ -9,11 +9,13 @@ import { Entry } from "./tree_data_providers/entry";
 export class MainTreeDataProvider extends BaseTreeDataProvider {
 	
 	protected config: Config;
+	protected searchText: string;
 
-	constructor(config: Config)
+	constructor(config: Config, searchText?: string)
 	{
 		super();
 		this.config = config;
+		this.searchText = searchText;
 	}
 
 	getTreeItem(element: Entry): vscode.TreeItem {		
@@ -74,7 +76,12 @@ export class MainTreeDataProvider extends BaseTreeDataProvider {
 				str += `${type} `;
 		}
 
-		str += this.config.getLabel(name);
+		const label = this.config.getLabel(name);
+
+		if (this.searchText && label.toLowerCase().includes(this.searchText))
+			str += `${label}  🔍`;
+		else
+			str += `${label}`;
 
 		return str;
 	}

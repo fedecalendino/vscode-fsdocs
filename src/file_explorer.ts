@@ -11,6 +11,7 @@ import { Entry } from "./tree_data_providers/entry";
 export class FSDocsFileExplorer {
 
 	private config: Config;
+	private searchText?: string;
 	private treeView: vscode.TreeView<Entry>;
 
 	constructor(context: vscode.ExtensionContext) {
@@ -142,7 +143,7 @@ export class FSDocsFileExplorer {
 	private async refreshTree(context: vscode.ExtensionContext) {
 		this.config = new Config();
 
-		const treeDataProvider = new MainTreeDataProvider(this.config);
+		const treeDataProvider = new MainTreeDataProvider(this.config, this.searchText);
 		
 		this.treeView = vscode.window.createTreeView(
 			'fsdocs-file-explorer', 
@@ -159,19 +160,14 @@ export class FSDocsFileExplorer {
 		};
 		
 		vscode.window.showInputBox(options).then(value => {
-			if (!value) {
-				return;
+			if (value) {
+				this.searchText = value.toLowerCase();
+				this.revealFilesAndFolders(this.searchText);
+			} else {
+				this.searchText = undefined;
 			}
-			
-			vscode.window.withProgress(
-				{ 
-					location: vscode.ProgressLocation.Window, 
-					title: `Searching for ${value}` }, 
-					async () => {
-						this.revealFilesAndFolders(value.toLowerCase());
-						this.refreshTree(context);
-					}
-				);
+
+			this.refreshTree(context);
 		});
 	}
 
