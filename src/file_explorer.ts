@@ -60,6 +60,11 @@ export class FSDocsFileExplorer {
 		);
 
 		vscode.commands.registerCommand(
+			'fsdocs-file-explorer.copy-element-path', 
+			(resource) => this.copyElementPath(resource)
+		);
+
+		vscode.commands.registerCommand(
 			'fsdocs-file-explorer.reveal-element', 
 			(resource) => this.revealElement(resource)
 		);
@@ -86,17 +91,16 @@ export class FSDocsFileExplorer {
 		try {
 			return JSON.parse(readFileSync(config_path).toString());
 		} catch (error) {
-			if (error.code == "ENOENT") {
+			if (error.code == "ENOENT")
 				console.error(`${EXTENSION_NAME}: missing config file '${CONFIG_FILE}'.`);
-			} else if (error.name == "SyntaxError") {
+			else if (error.name == "SyntaxError")
 				vscode.window.showErrorMessage(`${EXTENSION_NAME}: config file is not a valid JSON file.`);
-			}
-
+			
 			return undefined;
 		}
 	}
 
-	private openFile(resource: any): void {
+	private async openFile(resource: any) {
 		vscode.window.showTextDocument(resource);
 	}
 
@@ -124,28 +128,39 @@ export class FSDocsFileExplorer {
 		}
 	}
 
-	private copyElementLabel(resource: any): void {
+	private async _updateClipboard(text: string) {
+		vscode.env.clipboard.writeText(text);
+		vscode.window.showInformationMessage(`Copied '${text}' to clipboard`);
+	}
+
+	private async copyElementLabel(resource: any) {
 		const name: string = resource.uri.toString().split("/").at(-1);
 		
-		// eslint-disable-next-line no-prototype-builtins
-		if (this.config["items"].hasOwnProperty(name)) {
-			const label: string = this.config["items"][name]["label"];
-
-			vscode.env.clipboard.writeText(label);
-			vscode.window.showInformationMessage(`Copied '${label}' to clipboard`);
-		} else {
+		if (!this.config["items"].hasOwnProperty(name)) {
 			vscode.window.showErrorMessage(`Item '${name}' has no label`);
+			return;
 		}
+
+		if (!this.config["items"][name].hasOwnProperty("label")) {
+			vscode.window.showErrorMessage(`Item '${name}' has no label`);
+			return;
+		}
+
+		const label: string = this.config["items"][name]["label"];
+		this._updateClipboard(label);
 	}
 	
-	private copyElementName(resource: any): void {
+	private async copyElementName(resource: any) {
 		const name: string = resource.uri.toString().split("/").at(-1);
-
-		vscode.env.clipboard.writeText(name);
-		vscode.window.showInformationMessage(`Copied '${name}' to clipboard`);
+		this._updateClipboard(name);
 	}
 
-	private revealElement(resource: any): void {
+	private async copyElementPath(resource: any) {
+		const path: string = resource.uri.toString();
+		this._updateClipboard(path);
+	}
+
+	private async revealElement(resource: any) {
 		vscode.commands.executeCommand('revealInExplorer', resource.uri);
 	}
 

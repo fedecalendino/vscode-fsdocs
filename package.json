@@ -68,12 +68,17 @@
 					"when": "view == fsdocs-file-explorer"
 				},
 				{
+					"command": "fsdocs-file-explorer.copy-element-label",
+					"group": "5_copypaste",
+					"when": "view == fsdocs-file-explorer"
+				},
+				{
 					"command": "fsdocs-file-explorer.copy-element-name",
 					"group": "5_copypaste",
 					"when": "view == fsdocs-file-explorer"
 				},
 				{
-					"command": "fsdocs-file-explorer.copy-element-label",
+					"command": "fsdocs-file-explorer.copy-element-path",
 					"group": "5_copypaste",
 					"when": "view == fsdocs-file-explorer"
 				}
@@ -91,6 +96,10 @@
 			{
 				"command": "fsdocs-file-explorer.copy-element-name",
 				"title": "Copy name"
+			},
+			{
+				"command": "fsdocs-file-explorer.copy-element-path",
+				"title": "Copy path"
 			},
 			{
 				"command": "fsdocs-file-explorer.reveal-element",
