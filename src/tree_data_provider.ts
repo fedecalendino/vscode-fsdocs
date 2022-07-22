@@ -4,6 +4,7 @@ import * as vscode from 'vscode';
 import { Config, ConfigItem } from './config';
 import { BaseFileSystemProvider as BaseTreeDataProvider } from "./tree_data_providers/base";
 import { Entry } from "./tree_data_providers/entry";
+import * as utils from './utils';
 
 
 export class MainTreeDataProvider extends BaseTreeDataProvider {
@@ -19,43 +20,36 @@ export class MainTreeDataProvider extends BaseTreeDataProvider {
 	}
 
 	getTreeItem(element: Entry): vscode.TreeItem {		
-		const name: string = element.uri.toString().split("/").at(-1);
+		const name = utils.getFilename(element.uri);
 
-		if (this.config.excluded().includes(name)) {
+		if (this.config.ignored().includes(name))
 			return undefined;
-		}
 
-		const treeItem = new vscode.TreeItem(
-			element.uri, 
-			element.type === vscode.FileType.Directory ? 
-				vscode.TreeItemCollapsibleState.Collapsed : 
-				vscode.TreeItemCollapsibleState.None
-		);
+		let collapsedState = vscode.TreeItemCollapsibleState.None;
+
+		if (element.type === vscode.FileType.Directory)
+			collapsedState = vscode.TreeItemCollapsibleState.Collapsed; 
+
+		const treeItem = new vscode.TreeItem(element.uri, collapsedState);
 		
 		if (element.type === vscode.FileType.File) {
+			treeItem.contextValue = 'file';
 			treeItem.command = { 
 				command: 'fsdocs-file-explorer.open-file', 
 				title: "Open File", 
-				arguments: [
-					element.uri
-				], 
+				arguments: [element.uri], 
 			};
-
-			treeItem.contextValue = 'file';
 		}
 
-		if (this.config === undefined) {
+		if (this.config === undefined)
 			return treeItem;
-		}
 
 		const item = this.config.getItem(name);
 
-		if (!item)
-			return treeItem;
-
-		// eslint-disable-next-line no-prototype-builtins
-		treeItem.description = this.makeTreeItemDescription(item);
-		treeItem.tooltip = this.makeTreeItemTooltip(item);
+		if (item !== undefined) {
+			treeItem.description = this.makeTreeItemDescription(item);
+			treeItem.tooltip = this.makeTreeItemTooltip(item);
+		}
 
 		return treeItem;
 	}
@@ -79,12 +73,8 @@ export class MainTreeDataProvider extends BaseTreeDataProvider {
 
 		str += `${item.label}`;
 
-		if (this.searchText) {
-			if (item.label && item.label.toLowerCase().includes(this.searchText))
-				str += `  🔍`;
-			else if (item.description  && item.description.toLowerCase().includes(this.searchText))
-				str += `  🔍`;
-		}
+		if (this.searchText && item.containsSearchText(this.searchText))
+			str += `  🔍`;		
 		
 		return str;
 	}

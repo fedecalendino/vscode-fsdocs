@@ -6,6 +6,7 @@ import * as vscode from 'vscode';
 import { Config } from "./config";
 import { MainTreeDataProvider } from './tree_data_provider';
 import { Entry } from "./tree_data_providers/entry";
+import * as utils from './utils';
 
 
 export class FSDocsFileExplorer {
@@ -110,29 +111,24 @@ export class FSDocsFileExplorer {
 	}
 
 	private async copyElementLabel(resource: any) {
-		const name: string = resource.uri.toString().split("/").at(-1);
+		const name = utils.getFilename(resource.uri);
+		const item = this.config.getItem(name);
 		
-		if (!this.config["items"].hasOwnProperty(name)) {
+		if (item === undefined || item.label === undefined) {
 			vscode.window.showErrorMessage(`Item '${name}' has no label`);
 			return;
 		}
-
-		if (!this.config["items"][name].hasOwnProperty("label")) {
-			vscode.window.showErrorMessage(`Item '${name}' has no label`);
-			return;
-		}
-
-		const label: string = this.config["items"][name]["label"];
-		this._updateClipboard(label);
+		
+		this._updateClipboard(item.label);
 	}
 	
 	private async copyElementName(resource: any) {
-		const name: string = resource.uri.toString().split("/").at(-1);
+		const name = utils.getFilename(resource.uri);
 		this._updateClipboard(name);
 	}
 
 	private async copyElementPath(resource: any) {
-		const path: string = resource.uri.toString();
+		const path = resource.uri.toString();
 		this._updateClipboard(path);
 	}
 
@@ -187,21 +183,16 @@ export class FSDocsFileExplorer {
 	private _revealFilesAndFolders(root: string, searchText: string) {
 		readdirSync(root, {withFileTypes: true}).forEach(
 			(dirent) => {
-				if (this.config.excluded().includes(dirent.name))
+				if (this.config.ignored().includes(dirent.name))
 					return;
 
 				const path = `${root}/${dirent.name}`;
 
-				if (this._shouldReveal(dirent.name, searchText)) {
-					this.treeView.reveal(
-						{
-							uri: vscode.Uri.file(path),
-							type: dirent.isDirectory()? 2 : 1,
-						}
-					);
-
-					return;
-				}
+				if (this._shouldReveal(dirent.name, searchText))
+					this.treeView.reveal({
+						uri: vscode.Uri.file(path),
+						type: dirent.isDirectory()? 2 : 1,
+					});
 
 				if (dirent.isDirectory())
 					this._revealFilesAndFolders(path, searchText);
@@ -211,16 +202,6 @@ export class FSDocsFileExplorer {
 
 	private _shouldReveal(name: string, searchText: string): boolean {
 		const item = this.config.getItem(name);
-		
-		if (!item)
-			return false;
-		
-		if (item.label !== undefined && item.label.toLowerCase().includes(searchText))
-			return true;
-	
-		if (item.description !== undefined  && item.description.toLowerCase().includes(searchText))
-			return true;
-
-		return false;
+		return item && item.containsSearchText(searchText);
 	}
 }

@@ -226,9 +226,8 @@ export abstract class BaseFileSystemProvider implements vscode.TreeDataProvider<
 		const working_directory = vscode.workspace.workspaceFolders[0].uri.fsPath;
 		const dir: string = path.dirname(element.uri.fsPath);
 		
-		if  (dir == working_directory) {
+		if  (dir == working_directory)
 			return undefined;
-		}
 
 		return {
 			uri: vscode.Uri.file(dir),
@@ -239,41 +238,38 @@ export abstract class BaseFileSystemProvider implements vscode.TreeDataProvider<
 	async getChildren(element?: Entry): Promise<Entry[]> {
 		let uri = undefined;
 
-		if (element) {
+		if (element)
 			uri = element.uri;
-		} else {
+		else {
 			const workspaceFolder = vscode.workspace.workspaceFolders.filter(
 				folder => folder.uri.scheme === 'file'
 			)[0];
 
-			if (workspaceFolder) {
+			if (workspaceFolder)
 				uri = workspaceFolder.uri;
-			}
 		}
 
-		if (uri === undefined) {
+		if (uri === undefined)
 			return [];
-		}
 
 		const children = await this.readDirectory(uri);
 
 		children.sort((a, b) => {
-			if (a[1] === b[1]) {
+			if (a[1] === b[1])
 				return a[0].localeCompare(b[0]);
-			} else {
+			else
 				return a[1] === vscode.FileType.Directory ? -1 : 1;
-			}
 		});
 
 		return children.map(
 			([name, type]) => (
 				{ 
-					uri: vscode.Uri.file(path.join(uri.fsPath, name)), type 
+					uri: vscode.Uri.file(path.join(uri.fsPath, name)), 
+					type: type, 
 				}
 			)
 		);
 	}
-
 
 	abstract getTreeItem(element: Entry): vscode.TreeItem;
 }

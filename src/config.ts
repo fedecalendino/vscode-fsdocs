@@ -8,6 +8,7 @@ import { CONFIG_FILENAME, EXTENSION_NAME } from "./constants";
 
 export class ConfigItem {
 
+	public name: string;
 	public label?: string;
 	public description?: string;
 	public environment?: string;
@@ -15,7 +16,9 @@ export class ConfigItem {
 	public type?: string;
 	public type_icon?: string;
 
-	constructor(config: Config, data: JSON) {
+	constructor(name: string, data: JSON, config: Config) {
+		this.name = name;
+
 		if (data.hasOwnProperty("label"))
 			this.label = data["label"];
 		
@@ -31,6 +34,14 @@ export class ConfigItem {
 			this.type = data["type"];
 			this.type_icon = config.getTypeIcon(this.type);
 		}
+	}
+
+	containsSearchText(searchText: string): boolean {
+		return (
+			this.label && this.label.toLowerCase().includes(searchText)
+		) || (
+			this.description && this.description.toLowerCase().includes(searchText)
+		);
 	}
 }
 
@@ -58,18 +69,29 @@ export class Config {
 		}
 	}
 
-	public excluded(): Array<string> {
-		if (!this.data.hasOwnProperty("excluded"))
-			return [];
+	public ignored(): Array<string> {
+		if (this.data.hasOwnProperty("excludde"))
+			return this.data["excluded"];
+
+		if (this.data.hasOwnProperty("exclude"))
+			return this.data["exclude"];
+
+		if (this.data.hasOwnProperty("ignore"))
+			return this.data["ignore"];
 		
-		return this.data["excluded"];
+		return [];
 	}
 
 	public getItem(name: string): ConfigItem {
-		if (!this.data["items"].hasOwnProperty(name))
+		if (!this.data.hasOwnProperty("items"))
+			return undefined;
+
+		const items = this.data["items"];
+
+		if (!items.hasOwnProperty(name))
 			return undefined;
 		
-		return new ConfigItem(this, this.data["items"][name]);
+		return new ConfigItem(name, items[name], this);
 	}
 
 	public getEnvironmentIcon(environment: string): string {
