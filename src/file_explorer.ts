@@ -154,7 +154,7 @@ export class FSDocsFileExplorer {
 
 	private async searchElement(context: vscode.ExtensionContext) {
 		const options: vscode.InputBoxOptions = {
-			prompt: "Search in fsdocs labels and descriptions",
+			prompt: "Search in fsdocs labels and descriptions [beta]",
 			placeHolder: "(found items will be highlighted with a 🔍)"
 		};
 		

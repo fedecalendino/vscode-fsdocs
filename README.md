@@ -1,32 +1,48 @@
 # File Structure Docs
 
-Allow to add labels and descriptions to document the contents of specific files and folders on your project.
+This [VSCode](https://code.visualstudio.com/) [Extension](https://marketplace.visualstudio.com/VSCode) will 
+allow you decorate different items of your project's file structure with labels and descriptions to document their contents.
 
 
 ## usage
 
-This extension requires a file named `fsdocs.config.json` to be added to your project, with the following structure:
+To work this extension needs a file name `fsdocs.config.json`, at the root of your project, with the following structure:
 
 ```json
 {
+  "info" : {
+		"about": "This file is meant to be used with the FSDocs VSCode extension",
+		"url": "https://marketplace.visualstudio.com/items?itemName=fedecalendino.fsdocs"
+	},
+
+	"authors": [
+		"You <you@example.com>"
+	],
+
+	"ignore": [
+		".git",
+		".vscode"
+	],
+  
   "environments": {
     "dev": "🟢",
-    "tip": "🟡",
     "prod": "🔴"
   },
+
   "types": {
     "config-file": "📄️",
     "package": "📦️",
     "provider": "☁️️"
   },
+
   "items": {
     "59237813-c25f-44cb-942f-9c571214bfed": {
-      "description": "Here is more info about this provider.",
       "label": "MAIN PROVIDER",
       "environment": "dev",
       "type": "provider"
     },
     "9eec0c6b-e0af-4c71-939a-15223a51e2a4": {
+      "description": "Here is more info about this provider.",
       "label": "PKG 123",
       "type": "package",
       "environment": "dev"
@@ -36,28 +52,45 @@ This extension requires a file named `fsdocs.config.json` to be added to your pr
       "type": "package",
       "environment": "dev"
     },
-    "deploy.json": {
-      "label": "deploy configuration",
-      "type": "config-file"
+    "old.py": {
+      "label": "oldie",
+      "description": "here is more documentation for you",
+      "environment": "prod"
     }
   }
 }
 ```
 
+### info
+
+Simple information about the file, so users can know about its use and the extenstion.
+
+
+### authors
+
+List of people that have made changes to the configuration file.
+
+
+### ignore
+
+List of files and folders that should not be analyzed by the extension.
+
+
 ### enviroments / types
 
-These dictionaries contain different indicators to show right next to the label of an item.
+These contain different indicators to show right next to the label of an item.
+
 
 ### items
 
-Collection of identifiers to be used to match with the names of the folders/files in the project. 
+Collection of identifiers to be used to match with the names of the files and folders in the project. 
 
-* **label (required)**: label of the item associated with the identifier.
+* **label**: label of the item associated with the identifier.
 * **description (optional)**: description that will be shown in the tooltip of the item.
 * **environment (optional)**: environment in which the item runs.
-  * it will look for an indicator within the **environments** section.
+    * it will look for an indicator within the **environments** section.
 * **type (optional)**: type of the item.
-  * it will look for an indicator within the **types** section.
+    * it will look for an indicator within the **types** section.
 
 
-![example](https://raw.githubusercontent.com/fedecalendino/vscode-fsdocs/main/images/screenshot.png)
+![screenshot showing the configuration file and the result in the extension activity view](https://raw.githubusercontent.com/fedecalendino/vscode-fsdocs/main/images/screenshot.png)
