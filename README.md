@@ -11,18 +11,18 @@ To work this extension needs a file name `fsdocs.config.json`, at the root of yo
 ```json
 {
   "info" : {
-		"about": "This file is meant to be used with the FSDocs VSCode extension",
-		"url": "https://marketplace.visualstudio.com/items?itemName=fedecalendino.fsdocs"
-	},
+    "about": "This file is meant to be used with the FSDocs VSCode extension",
+    "url": "https://marketplace.visualstudio.com/items?itemName=fedecalendino.fsdocs"
+  },
 
-	"authors": [
-		"You <you@example.com>"
-	],
+  "authors": [
+    "You <you@example.com>"
+  ],
 
-	"ignore": [
-		".git",
-		".vscode"
-	],
+  "ignore": [
+    ".git",
+    ".vscode"
+  ],
   
   "environments": {
     "dev": "🟢",
@@ -61,6 +61,9 @@ To work this extension needs a file name `fsdocs.config.json`, at the root of yo
 }
 ```
 
+![screenshot showing the configuration file and the result in the extension activity view](https://raw.githubusercontent.com/fedecalendino/vscode-fsdocs/main/images/screenshot.png)
+
+
 ### info
 
 Simple information about the file, so users can know about its use and the extenstion.
@@ -93,4 +96,27 @@ Collection of identifiers to be used to match with the names of the files and fo
     * it will look for an indicator within the **types** section.
 
 
-![screenshot showing the configuration file and the result in the extension activity view](https://raw.githubusercontent.com/fedecalendino/vscode-fsdocs/main/images/screenshot.png)
+
+## actions
+
+![screenshot showing the available actions](https://raw.githubusercontent.com/fedecalendino/vscode-fsdocs/main/images/actions.png)
+
+
+### Menu bar
+
+* **Open config file**: will open the config file, if it doesn't exist one from a template will be created.
+* **Refresh**: will reload the tree.
+* **Search (beta)**: allows you to locate an item by search for the input text in the label/descriptions provided in the config file.
+* **Collapse all**: will collapse all folders in the tree.
+
+
+### Context menu
+
+* **Copy label**: will add the label of the item to the clipboard (if available).
+* **Copy name**: will add the name of the item to the clipboard.
+* **Copy path**: will add the absolute path of the item to the clipboard.
+
+
+### Item actions
+
+* **Reveal in editor**: will reveal the selected item in VSCode's default editor.
