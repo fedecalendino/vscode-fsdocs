@@ -3,6 +3,9 @@
 This [VSCode](https://code.visualstudio.com/) [Extension](https://marketplace.visualstudio.com/VSCode) will 
 allow you decorate different items of your project's file structure with labels and descriptions to document their contents.
 
+![screenshot showing the activity bar](https://raw.githubusercontent.com/fedecalendino/vscode-fsdocs/main/images/sidebar.png)
+
+
 
 ## usage
 
