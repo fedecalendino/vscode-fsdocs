@@ -3,7 +3,7 @@
 	"displayName": "File Structure Docs",
 	"description": "Allow to document the contents of specific files and folders on your project.",
 	"icon": "images/icon.png",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"publisher": "fedecalendino",
 	"private": false,
 	"license": "MIT",

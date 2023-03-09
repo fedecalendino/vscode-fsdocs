@@ -90,18 +90,23 @@ export class Config {
 		const lookup = name.split(separator).at(-1);
 
 		let tmp = this.data["items"];
-		let found = undefined;
+		
+		if (tmp.hasOwnProperty(lookup))
+			return new ConfigItem(lookup, tmp[lookup], this);
 
 		for (const key of name.split(separator)) {
-			if (tmp.hasOwnProperty(lookup)) {
-				found = tmp[lookup];
-				break;
-			}
-
 			if (tmp.hasOwnProperty(key)) {
 				tmp = tmp[key];
+			} else {
+				return undefined;
 			}
 		}	
+
+		let found = undefined;
+
+		if (tmp.hasOwnProperty(lookup)) {
+			found = tmp[lookup];
+		}
 
 		if (found === undefined) {
 			return undefined;
