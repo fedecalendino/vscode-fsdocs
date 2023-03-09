@@ -86,7 +86,15 @@ export class Config {
 		if (!this.data.hasOwnProperty("items"))
 			return undefined;
 
+		console.log(name);
+
 		const separator = path.sep;
+		const first =  name.split(separator).at(0);
+
+		if (first in this.ignored()) {
+			return undefined;
+		}
+
 		const lookup = name.split(separator).at(-1);
 
 		let tmp = this.data["items"];
@@ -95,24 +103,14 @@ export class Config {
 			return new ConfigItem(lookup, tmp[lookup], this);
 
 		for (const key of name.split(separator)) {
-			if (tmp.hasOwnProperty(key)) {
-				tmp = tmp[key];
-			} else {
+			if (!tmp.hasOwnProperty(key)) {
 				return undefined;
 			}
+
+			tmp = tmp[key];
 		}	
 
-		let found = undefined;
-
-		if (tmp.hasOwnProperty(lookup)) {
-			found = tmp[lookup];
-		}
-
-		if (found === undefined) {
-			return undefined;
-		}
-		
-		return new ConfigItem(name, found, this);
+		return new ConfigItem(name, tmp, this);
 	}
 
 	public getEnvironmentIcon(environment: string): string {
