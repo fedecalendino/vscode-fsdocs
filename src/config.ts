@@ -70,7 +70,7 @@ export class Config {
 	}
 
 	public ignored(): Array<string> {
-		if (this.data.hasOwnProperty("excludde"))
+		if (this.data.hasOwnProperty("excluded"))
 			return this.data["excluded"];
 
 		if (this.data.hasOwnProperty("exclude"))
@@ -86,12 +86,10 @@ export class Config {
 		if (!this.data.hasOwnProperty("items"))
 			return undefined;
 
-		console.log(name);
-
 		const separator = path.sep;
 		const first =  name.split(separator).at(0);
 
-		if (first in this.ignored()) {
+		if (this.ignored().includes(first)) {
 			return undefined;
 		}
 

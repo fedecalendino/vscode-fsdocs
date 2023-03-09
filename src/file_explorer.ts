@@ -183,25 +183,30 @@ export class FSDocsFileExplorer {
 	private _revealFilesAndFolders(root: string, searchText: string) {
 		readdirSync(root, {withFileTypes: true}).forEach(
 			(dirent) => {
-				if (this.config.ignored().includes(dirent.name))
+				if (this.config.ignored().includes(dirent.name)) {
 					return;
+				}
 
 				const path = `${root}/${dirent.name}`;
 
-				if (this._shouldReveal(dirent.name, searchText))
+				if (this._shouldReveal(path, searchText)) {
 					this.treeView.reveal({
 						uri: vscode.Uri.file(path),
 						type: dirent.isDirectory()? 2 : 1,
 					});
+				}
 
-				if (dirent.isDirectory())
+				if (dirent.isDirectory()) {
 					this._revealFilesAndFolders(path, searchText);
+				}
 			}
 		);
 	}
 
-	private _shouldReveal(name: string, searchText: string): boolean {
-		const item = this.config.getItem(name);
+	private _shouldReveal(path: string, searchText: string): boolean {
+		const filename = utils.getFilename(vscode.Uri.file(path));
+		
+		const item = this.config.getItem(filename);
 		return item && item.containsSearchText(searchText);
 	}
 }

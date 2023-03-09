@@ -41,6 +41,10 @@ export class MainTreeDataProvider extends BaseTreeDataProvider {
 		if (this.config === undefined)
 			return treeItem;
 
+		if (this.config.ignored().includes(name)) {
+			return undefined;
+		}
+
 		const item = this.config.getItem(name);
 
 		if (item !== undefined) {
@@ -55,6 +59,7 @@ export class MainTreeDataProvider extends BaseTreeDataProvider {
 		if (item === undefined) {
 			return "";
 		}
+
 		let str = "";
 
 		if (item.environment) {
