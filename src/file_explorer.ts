@@ -123,7 +123,7 @@ export class FSDocsFileExplorer {
 	}
 	
 	private async copyElementName(resource: any) {
-		const name = utils.getFilename(resource.uri);
+		const name = utils.getFilename(resource.uri).split(path.sep).at(-1);
 		this._updateClipboard(name);
 	}
 
