@@ -19,19 +19,19 @@ export class ConfigItem {
 	constructor(name: string, data: JSON, config: Config) {
 		this.name = name;
 
-		if (data.hasOwnProperty("label"))
-			this.label = data["label"];
+		if (data.hasOwnProperty("__label__"))
+			this.label = data["__label__"];
 		
-		if (data.hasOwnProperty("description"))
-			this.description = data["description"];
+		if (data.hasOwnProperty("__description__"))
+			this.description = data["__description__"];
 		
-		if (data.hasOwnProperty("environment")) {
-			this.environment = data["environment"];
+		if (data.hasOwnProperty("__environment__")) {
+			this.environment = data["__environment__"];
 			this.environment_icon = config.getEnvironmentIcon(this.environment);
 		}
 
-		if (data.hasOwnProperty("type")) {
-			this.type = data["type"];
+		if (data.hasOwnProperty("__type__")) {
+			this.type = data["__type__"];
 			this.type_icon = config.getTypeIcon(this.type);
 		}
 	}
@@ -86,12 +86,28 @@ export class Config {
 		if (!this.data.hasOwnProperty("items"))
 			return undefined;
 
-		const items = this.data["items"];
+		const separator = path.sep;
+		const lookup = name.split(separator).at(-1);
 
-		if (!items.hasOwnProperty(name))
+		let tmp = this.data["items"];
+		let found = undefined;
+
+		for (const key of name.split(separator)) {
+			if (tmp.hasOwnProperty(lookup)) {
+				found = tmp[lookup];
+				break;
+			}
+
+			if (tmp.hasOwnProperty(key)) {
+				tmp = tmp[key];
+			}
+		}	
+
+		if (found === undefined) {
 			return undefined;
+		}
 		
-		return new ConfigItem(name, items[name], this);
+		return new ConfigItem(name, found, this);
 	}
 
 	public getEnvironmentIcon(environment: string): string {

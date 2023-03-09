@@ -22,9 +22,6 @@ export class MainTreeDataProvider extends BaseTreeDataProvider {
 	getTreeItem(element: Entry): vscode.TreeItem {		
 		const name = utils.getFilename(element.uri);
 
-		if (this.config.ignored().includes(name))
-			return undefined;
-
 		let collapsedState = vscode.TreeItemCollapsibleState.None;
 
 		if (element.type === vscode.FileType.Directory)
@@ -55,6 +52,9 @@ export class MainTreeDataProvider extends BaseTreeDataProvider {
 	}
 
 	makeTreeItemDescription(item: ConfigItem): string {
+		if (item === undefined) {
+			return "";
+		}
 		let str = "";
 
 		if (item.environment) {
@@ -71,7 +71,9 @@ export class MainTreeDataProvider extends BaseTreeDataProvider {
 				str += `${item.type} `;
 		}
 
-		str += `${item.label}`;
+		if (item.label !== undefined) {
+			str += `${item.label}`;
+		}
 
 		if (this.searchText && item.containsSearchText(this.searchText))
 			str += `  🔍`;		

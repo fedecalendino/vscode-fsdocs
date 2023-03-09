@@ -24,10 +24,19 @@
   },
   
   "items": {
+    "src": {
+      "__type__": "source code",
+
+      "utils.js": {
+        "__label__": "utils",
+        "__type__": "file"
+      }
+    },
+
     "fsdocs.config.json": {
-      "label": "config file for fsdocs",
-      "environment": "local",
-      "type": "config"
+      "__label__": "config file for fsdocs",
+      "__environment__": "local",
+      "__type__": "config"
     }
   }
 }

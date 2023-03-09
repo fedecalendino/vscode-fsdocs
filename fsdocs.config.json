@@ -8,11 +8,6 @@
     "Fede Calendino <fede@calendino.com>"
   ],
   
-  "ignore": [
-    ".git",
-    ".vscode"
-  ],
-
   "environments": {
     "local": "⚪️"
   },

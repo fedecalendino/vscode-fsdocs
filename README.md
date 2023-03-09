@@ -39,26 +39,31 @@ To work this extension needs a file name `fsdocs.config.json`, at the root of yo
   },
 
   "items": {
-    "59237813-c25f-44cb-942f-9c571214bfed": {
-      "label": "MAIN PROVIDER",
-      "environment": "dev",
-      "type": "provider"
-    },
-    "9eec0c6b-e0af-4c71-939a-15223a51e2a4": {
-      "description": "Here is more info about this provider.",
-      "label": "PKG 123",
-      "type": "package",
-      "environment": "dev"
-    },
-    "db509caa-57a2-4e46-b445-dd8555d66b63": {
-      "label": "PKG 456",
-      "type": "package",
-      "environment": "dev"
+    "src": {
+      "__label__": "source code",
+
+      "59237813-c25f-44cb-942f-9c571214bfed": {
+        "__label__": "MAIN PROVIDER",
+        "__environment__": "dev",
+        "__type__": "provider",
+
+        "9eec0c6b-e0af-4c71-939a-15223a51e2a4": {
+          "__label__": "PKG 123",
+          "__description__": "Here is more info about this provider.",
+          "__type__": "package",
+          "__environment__": "dev"
+        }
+      },
+      "db509caa-57a2-4e46-b445-dd8555d66b63": {
+        "__label__": "PKG 456",
+        "__type__": "package",
+        "__environment__": "dev"
+      }
     },
     "old.py": {
-      "label": "oldie",
-      "description": "here is more documentation for you",
-      "environment": "prod"
+      "__label__": "oldie",
+      "__description__": "here is more documentation for you",
+      "__environment__": "prod"
     }
   }
 }
@@ -91,11 +96,11 @@ These contain different indicators to show right next to the label of an item.
 
 Collection of identifiers to be used to match with the names of the files and folders in the project. 
 
-* **label**: label of the item associated with the identifier.
-* **description (optional)**: description that will be shown in the tooltip of the item.
-* **environment (optional)**: environment in which the item runs.
+* **`__label__`**: label of the item associated with the identifier.
+* **`__description__` (optional)**: description that will be shown in the tooltip of the item, to see it hover your mouse on top of it.
+* **`__environment__` (optional)**: environment in which the item runs.
     * it will look for an indicator within the **environments** section.
-* **type (optional)**: type of the item.
+* **`__type__` (optional)**: type of the item.
     * it will look for an indicator within the **types** section.
 
 
